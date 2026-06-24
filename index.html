@@ -317,6 +317,96 @@
   .status-dead { color: var(--text2); border-color: #252835; background: rgba(0,0,0,0.2); }
   .status-retired { color: #7a6aaa; border-color: #3a3060; background: rgba(50,40,80,0.15); }
 
+  /* CARTES — polices Cinzel/Lora */
+  .card-name { font-family: 'Cinzel', serif !important; font-size: 1.05rem !important; color: var(--white) !important; font-weight: 700 !important; line-height: 1.2 !important; letter-spacing: 0.04em !important; }
+  .card-rank { font-family: 'Cinzel', serif !important; font-size: 0.7rem !important; color: var(--blue2) !important; margin-top: 0.3rem !important; letter-spacing: 0.08em !important; }
+  .card-breath { font-family: 'Lora', serif !important; font-size: 0.7rem !important; color: var(--text2) !important; margin-top: 0.12rem !important; font-style: italic !important; }
+  .card-obs { font-family: 'Lora', serif !important; font-size: 0.76rem !important; color: var(--text2) !important; line-height: 1.65 !important; font-style: italic !important; }
+
+  /* FICHE DÉTAILLÉE */
+  #modal-fiche .modal {
+    max-width: 700px; padding: 0; overflow: hidden; border-radius: 10px;
+    border-color: rgba(90,138,220,0.35);
+    box-shadow: 0 0 60px rgba(90,138,220,0.2), 0 0 120px rgba(58,90,154,0.1);
+  }
+  .fiche-top {
+    display: flex; align-items: stretch; min-height: 260px;
+    background: linear-gradient(135deg, #08091a 0%, #0c0e20 100%);
+    position: relative; overflow: hidden;
+  }
+  .fiche-top::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 35% 50%, rgba(90,138,220,0.09) 0%, transparent 65%);
+  }
+  .fiche-photo {
+    width: 210px; flex-shrink: 0; position: relative; overflow: hidden;
+    background: #06070f;
+  }
+  .fiche-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .fiche-photo-placeholder {
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    font-size: 5rem; opacity: 0.12;
+  }
+  .fiche-photo::after {
+    content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 50px;
+    background: linear-gradient(90deg, transparent, #08091a);
+  }
+  .fiche-info {
+    flex: 1; padding: 2rem 2rem 1.6rem; display: flex; flex-direction: column; justify-content: center;
+    position: relative; z-index: 1;
+  }
+  .fiche-status-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.6rem; padding: 0.18rem 0.65rem; border-radius: 20px; border: 1px solid;
+    margin-bottom: 1.1rem; align-self: flex-start;
+    font-family: 'Cinzel', serif; letter-spacing: 0.1em;
+  }
+  .fiche-name {
+    font-family: 'Cinzel', serif; font-size: 1.85rem; font-weight: 700;
+    color: var(--white); line-height: 1.15; margin-bottom: 0.45rem;
+    text-shadow: 0 0 24px rgba(90,138,220,0.45);
+    letter-spacing: 0.06em;
+  }
+  .fiche-rank {
+    font-family: 'Cinzel', serif; font-size: 0.82rem; color: var(--blue2);
+    letter-spacing: 0.14em; margin-bottom: 0.2rem;
+  }
+  .fiche-souffle {
+    font-family: 'Lora', serif; font-size: 0.8rem; color: var(--text2);
+    font-style: italic; margin-bottom: 1.2rem;
+  }
+  .fiche-divider {
+    width: 50px; height: 1px; margin-bottom: 1.2rem;
+    background: linear-gradient(90deg, var(--blue2), transparent);
+  }
+  .fiche-meta { display: flex; flex-direction: column; gap: 0.4rem; }
+  .fiche-meta-row {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'Cinzel', serif; font-size: 0.68rem; color: var(--text2); letter-spacing: 0.06em;
+  }
+  .fiche-meta-row span:last-child { color: var(--silver); }
+  .fiche-bottom {
+    padding: 1.5rem 2rem; background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+  .fiche-obs-title {
+    font-family: 'Cinzel', serif; font-size: 0.6rem; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.22em; margin-bottom: 0.75rem;
+  }
+  .fiche-obs-body {
+    font-family: 'Lora', serif; font-size: 0.9rem; color: var(--text);
+    line-height: 1.9; font-style: italic;
+  }
+  .fiche-actions {
+    display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+    padding: 0.9rem 2rem 1.1rem; background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+  .fiche-id {
+    font-family: 'Cinzel', serif; font-size: 0.55rem; color: var(--text2);
+    letter-spacing: 0.18em; opacity: 0.5;
+  }
+
   .photo-upload-row { display: flex; align-items: center; gap: 1rem; }
   .photo-preview {
     width: 90px; height: 90px; border-radius: 6px; flex-shrink: 0;
