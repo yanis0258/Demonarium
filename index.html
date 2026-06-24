@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Obscura — Archives Suprêmes</title>
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0a0a0f;
+    --bg2:       #0f0f18;
+    --bg3:       #141420;
+    --border:    #2a2a40;
+    --accent:    #8b1a1a;
+    --accent2:   #c0392b;
+    --gold:      #c9a84c;
+    --gold2:     #f0d080;
+    --text:      #d4cfc0;
+    --text2:     #8a856e;
+    --white:     #f0ebe0;
+    --red:       #ff4444;
+    --green:     #44bb44;
+    --purple:    #6a3fa0;
+    --sidebar-w: 240px;
+  }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== SPLASH SCREEN ===== */
+  #splash {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #000;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+  }
+  #splash.hide { opacity: 0; pointer-events: none; }
+
+  .splash-runes {
+    font-size: 2rem; color: var(--accent2);
+    letter-spacing: 1rem;
+    animation: pulse 2s ease-in-out infinite;
+    margin-bottom: 2rem;
+  }
+  .splash-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: bold;
+    color: var(--gold);
+    text-shadow: 0 0 40px rgba(201,168,76,0.6), 0 0 80px rgba(139,26,26,0.4);
+    letter-spacing: 0.3em;
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  .splash-subtitle {
+    font-size: 1rem; color: var(--text2);
+    letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: 3rem;
+  }
+  .splash-enter {
+    color: var(--gold2); font-size: 0.85rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  .splash-tagline {
+    position: absolute; bottom: 2rem;
+    color: var(--text2); font-size: 0.75rem; font-style: italic;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== LAYOUT ===== */
+  #app { display: flex; min-height: 100vh; }
+
+  /* ===== SIDEBAR ===== */
+  #sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+  .sidebar-logo {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .sidebar-logo .logo-title {
+    font-size: 1.1rem; font-weight: bold;
+    color: var(--gold); letter-spacing: 0.2em;
+  }
+  .sidebar-logo .logo-sub {
+    font-size: 0.65rem; color: var(--text2);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .sidebar-nav { flex: 1; padding: 0.5rem 0; overflow-y: auto; }
+  .nav-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.65rem 1.2rem;
+    cursor: pointer; font-size: 0.85rem;
+    color: var(--text2);
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .nav-item:hover { color: var(--white); background: rgba(255,255,255,0.03); }
+  .nav-item.active { color: var(--gold); border-left-color: var(--gold); background: rgba(201,168,76,0.06); }
+  .nav-item .badge {
+    margin-left: auto;
+    background: var(--accent); color: #fff;
+    font-size: 0.65rem; padding: 0.1rem 0.4rem;
+    border-radius: 20px; min-width: 1.4rem;
+    text-align: center;
+  }
+  .nav-separator {
+    padding: 0.5rem 1.2rem 0.2rem;
+    font-size: 0.6rem; color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.15em;
+    border-top: 1px solid var(--border); margin-top: 0.3rem;
+  }
+  .nav-item.secret { color: #555; }
+  .nav-item.secret.active, .nav-item.secret:hover { color: var(--purple); }
+  .nav-item.secret.unlocked { color: var(--text2); }
+
+  .sidebar-bottom {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .sidebar-role {
+    font-size: 0.65rem; color: var(--text2);
+    text-align: center; letter-spacing: 0.1em;
+  }
+  .sidebar-role span { color: var(--gold); }
+
+  /* ===== MAIN ===== */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ===== TOP BAR ===== */
+  .topbar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar h1 { font-size: 1rem; color: var(--gold2); flex: 1; letter-spacing: 0.05em; }
+  .topbar-actions { display: flex; align-items: center; gap: 0.5rem; }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+  }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold { border-color: var(--gold); color: var(--gold); }
+  .btn-gold:hover { background: var(--gold); color: #000; }
+  .btn-red { border-color: var(--accent2); color: var(--accent2); }
+  .btn-red:hover { background: var(--accent2); color: #fff; }
+  .btn-sm { padding: 0.25rem 0.6rem; font-size: 0.72rem; }
+  .btn-icon {
+    width: 2rem; height: 2rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text2); cursor: pointer; border-radius: 3px;
+    transition: all 0.2s; font-size: 0.9rem;
+  }
+  .btn-icon:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ===== CONTENT ===== */
+  .content { padding: 1.5rem; }
+
+  /* ===== STAT CARDS ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 4px;
+  }
+  .stat-icon { font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .stat-num { font-size: 1.8rem; font-weight: bold; color: var(--gold); }
+  .stat-label { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+  /* ===== SECTION HEADER ===== */
+  .section-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header h2 { font-size: 1rem; color: var(--gold2); flex: 1; }
+
+  /* ===== FILTER TABS ===== */
+  .filter-tabs { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 1rem; }
+  .filter-tab {
+    padding: 0.3rem 0.8rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text2);
+    font-size: 0.75rem; cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.2s;
+    font-family: 'Georgia', serif;
+  }
+  .filter-tab:hover { border-color: var(--gold2); color: var(--gold2); }
+  .filter-tab.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.1); }
+
+  /* ===== CARDS ===== */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: rgba(201,168,76,0.3); }
+  .card-header { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 0.75rem; }
+  .card-avatar {
+    width: 48px; height: 48px;
+    border-radius: 4px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+    overflow: hidden;
+  }
+  .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .card-name { font-size: 0.95rem; color: var(--white); font-weight: bold; }
+  .card-rank { font-size: 0.72rem; color: var(--gold); margin-top: 0.15rem; }
+  .card-breath { font-size: 0.7rem; color: var(--text2); margin-top: 0.1rem; }
+  .card-status {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    font-size: 0.65rem; padding: 0.1rem 0.5rem;
+    border-radius: 20px; border: 1px solid;
+  }
+  .status-alive { color: var(--green); border-color: var(--green); background: rgba(68,187,68,0.1); }
+  .status-dead { color: #888; border-color: #444; background: rgba(0,0,0,0.2); }
+  .status-retired { color: var(--text2); border-color: var(--border); }
+  .card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 0.5rem; border-top: 1px solid var(--border);
+    font-size: 0.7rem; color: var(--text2); margin-top: 0.5rem;
+  }
+  .card-actions { display: flex; gap: 0.3rem; }
+
+  /* ===== TARGET CARDS ===== */
+  .target-card { border-color: rgba(139,26,26,0.4); }
+  .target-card:hover { border-color: var(--accent2); }
+  .priority-badge {
+    display: inline-block; font-size: 0.65rem;
+    padding: 0.1rem 0.5rem; border-radius: 20px;
+    font-weight: bold; letter-spacing: 0.05em;
+  }
+  .priority-1 { background: rgba(255,0,0,0.2); color: #ff4444; border: 1px solid #ff4444; }
+  .priority-2 { background: rgba(255,140,0,0.2); color: #ff8c00; border: 1px solid #ff8c00; }
+  .priority-3 { background: rgba(255,215,0,0.2); color: var(--gold); border: 1px solid var(--gold); }
+
+  /* ===== MISSION COLUMNS ===== */
+  .missions-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 900px) { .missions-board { grid-template-columns: repeat(2,1fr); } }
+  @media (max-width: 600px) { .missions-board { grid-template-columns: 1fr; } }
+
+  .mission-col { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 0.75rem; }
+  .col-header {
+    font-size: 0.75rem; color: var(--text2); text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 0.75rem;
+    padding-bottom: 0.4rem; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .mission-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.75rem; margin-bottom: 0.5rem;
+  }
+  .mission-card-title { font-size: 0.82rem; color: var(--white); margin-bottom: 0.3rem; }
+  .mission-card-desc { font-size: 0.72rem; color: var(--text2); line-height: 1.5; }
+  .mission-priority { float: right; }
+
+  /* ===== HISTORY TABLE ===== */
+  .history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .history-table th {
+    background: var(--bg3); color: var(--text2);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-size: 0.65rem; padding: 0.6rem 0.75rem;
+    text-align: left; border-bottom: 1px solid var(--border);
+    font-weight: normal;
+  }
+  .history-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(42,42,64,0.5);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .history-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .history-action {
+    display: inline-block; font-size: 0.65rem;
+    padding: 0.1rem 0.5rem; border-radius: 20px;
+  }
+  .action-add { background: rgba(68,187,68,0.15); color: var(--green); }
+  .action-edit { background: rgba(201,168,76,0.15); color: var(--gold); }
+  .action-del { background: rgba(255,68,68,0.15); color: var(--red); }
+
+  /* ===== CODEX ===== */
+  .codex-section { margin-bottom: 0.5rem; border: 1px solid var(--border); border-radius: 3px; overflow: hidden; }
+  .codex-toggle {
+    width: 100%; padding: 0.9rem 1rem;
+    background: var(--bg3); border: none;
+    color: var(--gold2); font-family: 'Georgia', serif;
+    font-size: 0.85rem; text-align: left;
+    cursor: pointer; display: flex; align-items: center; gap: 0.5rem;
+    transition: background 0.2s;
+  }
+  .codex-toggle:hover { background: rgba(201,168,76,0.08); }
+  .codex-toggle .arrow { margin-left: auto; transition: transform 0.2s; }
+  .codex-toggle.open .arrow { transform: rotate(180deg); }
+  .codex-body {
+    padding: 1rem 1.2rem;
+    font-size: 0.82rem; line-height: 1.8;
+    color: var(--text); border-top: 1px solid var(--border);
+    background: var(--bg2);
+    display: none;
+  }
+  .codex-body.open { display: block; }
+  .codex-body strong { color: var(--gold2); }
+
+  /* ===== ADMIN ===== */
+  .admin-section { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 1.2rem; margin-bottom: 1rem; }
+  .admin-section h3 { font-size: 0.85rem; color: var(--gold); margin-bottom: 1rem; letter-spacing: 0.1em; }
+  .whitelist-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 0; border-bottom: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .whitelist-item:last-child { border-bottom: none; }
+  .wl-id { color: var(--text2); font-size: 0.72rem; font-family: monospace; }
+  .wl-name { color: var(--white); flex: 1; }
+  .wl-roles { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+  .role-badge {
+    font-size: 0.6rem; padding: 0.1rem 0.4rem;
+    border-radius: 3px; border: 1px solid;
+  }
+  .role-admin { color: #ff9900; border-color: #ff9900; background: rgba(255,153,0,0.1); }
+  .role-veilleur { color: var(--gold); border-color: var(--gold); background: rgba(201,168,76,0.1); }
+  .role-sphere { color: var(--purple); border-color: var(--purple); background: rgba(106,63,160,0.1); }
+
+  /* ===== SECRET ===== */
+  .secret-header {
+    background: linear-gradient(135deg, #0a0010 0%, #120018 100%);
+    border: 1px solid rgba(106,63,160,0.3);
+    border-radius: 4px; padding: 1.2rem; margin-bottom: 1rem;
+  }
+  .secret-header h2 { color: #a060e0; letter-spacing: 0.2em; }
+  .secret-header p { font-size: 0.75rem; color: #665577; margin-top: 0.4rem; }
+
+  .rules-list { counter-reset: roman; }
+  .rule-item {
+    background: var(--bg2); border: 1px solid rgba(106,63,160,0.2);
+    border-radius: 3px; margin-bottom: 0.5rem; overflow: hidden;
+  }
+  .rule-toggle {
+    width: 100%; padding: 0.9rem 1rem; background: transparent;
+    border: none; color: #a060e0; font-family: 'Georgia', serif;
+    font-size: 0.82rem; text-align: left; cursor: pointer;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .rule-num { color: #6a3fa0; font-size: 0.7rem; font-style: italic; min-width: 1rem; }
+  .rule-body {
+    padding: 0.75rem 1rem; font-size: 0.8rem;
+    color: var(--text); line-height: 1.8;
+    border-top: 1px solid rgba(106,63,160,0.2);
+    display: none;
+  }
+  .rule-body.open { display: block; }
+
+  .secret-op-card {
+    background: var(--bg2); border: 1px solid rgba(106,63,160,0.3);
+    border-radius: 4px; padding: 1rem; margin-bottom: 0.75rem;
+  }
+  .op-type {
+    display: inline-block; font-size: 0.65rem;
+    padding: 0.1rem 0.5rem; border-radius: 20px;
+    margin-bottom: 0.5rem;
+    background: rgba(106,63,160,0.2); color: #c080ff; border: 1px solid #6a3fa0;
+  }
+  .op-priority-critique { background: rgba(255,0,0,0.2); color: #ff4444; border: 1px solid #ff4444; }
+  .op-priority-haute { background: rgba(255,140,0,0.2); color: #ff8c00; border: 1px solid #ff8c00; }
+  .op-priority-normale { background: rgba(100,100,100,0.2); color: #aaa; border: 1px solid #555; }
+
+  /* ===== MODALS ===== */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(0,0,0,0.8);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1.5rem;
+    max-width: 480px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-title {
+    font-size: 1rem; color: var(--gold);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.1em;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: transparent; border: none;
+    color: var(--text2); cursor: pointer; font-size: 1.1rem;
+  }
+  .modal-close:hover { color: var(--red); }
+
+  /* ===== FORMS ===== */
+  .form-group { margin-bottom: 0.9rem; }
+  .form-group label {
+    display: block; font-size: 0.72rem;
+    color: var(--text2); text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 0.3rem;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.55rem 0.75rem;
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--white); font-family: 'Georgia', serif;
+    font-size: 0.82rem; border-radius: 3px;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--gold);
+  }
+  .form-group select option { background: var(--bg3); }
+  .form-group textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+  .form-hint { font-size: 0.7rem; color: var(--text2); margin-top: 0.3rem; line-height: 1.5; }
+  .form-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.2rem; }
+  .checkbox-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .checkbox-label {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    font-size: 0.78rem; color: var(--text); cursor: pointer;
+  }
+  .checkbox-label input[type=checkbox] { margin-top: 0.1rem; }
+  .checkbox-desc { font-size: 0.67rem; color: var(--text2); margin-top: 0.05rem; }
+
+  /* ===== LOGIN MODAL ===== */
+  .login-modal { max-width: 400px; }
+  .login-step { display: none; }
+  .login-step.active { display: block; }
+  .login-info {
+    background: var(--bg3); border: 1px solid var(--border);
+    padding: 0.75rem; border-radius: 3px; margin-bottom: 1rem;
+    font-size: 0.78rem; line-height: 1.7; color: var(--text2);
+  }
+  .login-info strong { color: var(--gold2); }
+
+  /* ===== SEARCH ===== */
+  .search-bar {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.4rem 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .search-bar input {
+    background: transparent; border: none;
+    color: var(--white); font-family: 'Georgia', serif;
+    font-size: 0.82rem; flex: 1;
+  }
+  .search-bar input:focus { outline: none; }
+  .search-bar input::placeholder { color: var(--text2); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--text2); font-style: italic; font-size: 0.85rem;
+  }
+  .empty-state .empty-icon { font-size: 2rem; margin-bottom: 0.75rem; opacity: 0.4; }
+
+  /* ===== TOAST ===== */
+  #toast-container {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    z-index: 9999;
+  }
+  .toast {
+    background: var(--bg2); border: 1px solid var(--border);
+    padding: 0.75rem 1.1rem; border-radius: 4px;
+    font-size: 0.8rem; max-width: 280px;
+    animation: slideIn 0.3s ease;
+  }
+  .toast-success { border-color: var(--green); color: var(--green); }
+  .toast-error { border-color: var(--red); color: var(--red); }
+  .toast-info { border-color: var(--gold); color: var(--gold); }
+
+  /* ===== MUSIC BAR ===== */
+  .music-bar {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; color: var(--text2);
+  }
+  .music-bar button {
+    background: transparent; border: none;
+    color: var(--text2); cursor: pointer; font-size: 0.9rem;
+  }
+  .music-bar button:hover { color: var(--gold); }
+
+  /* ===== READONLY BADGE ===== */
+  .mode-badge {
+    font-size: 0.65rem; padding: 0.2rem 0.6rem;
+    border-radius: 20px; letter-spacing: 0.05em;
+    border: 1px solid var(--border); color: var(--text2);
+  }
+  .mode-badge.editor { border-color: var(--gold); color: var(--gold); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; } 50% { opacity: 1; }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.4s ease; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  /* ===== DIVIDER ===== */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+
+  /* ===== CREDS DISPLAY ===== */
+  .creds-box {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.75rem; margin-bottom: 0.75rem;
+  }
+  .creds-row {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.4rem; font-size: 0.8rem;
+  }
+  .creds-row:last-child { margin-bottom: 0; }
+  .creds-label { color: var(--text2); min-width: 80px; font-size: 0.72rem; }
+  .creds-val { color: var(--white); flex: 1; font-family: monospace; }
+  .creds-copy { background: transparent; border: 1px solid var(--border); color: var(--text2); cursor: pointer; padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.7rem; }
+  .creds-copy:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ===== PHOTO GRID ===== */
+  .photo-list { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+  .photo-item {
+    width: 60px; height: 60px; border-radius: 3px;
+    object-fit: cover; border: 1px solid var(--border);
+    cursor: pointer;
+  }
+  .upload-preview { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+  .preview-img { width: 60px; height: 60px; object-fit: cover; border-radius: 3px; border: 1px solid var(--border); }
+
+  /* ===== INFO ROWS ===== */
+  .info-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: var(--text2); margin-bottom: 0.25rem; }
+  .info-row span:last-child { color: var(--text); }
+
+  /* ===== WARNING ===== */
+  .warning-box {
+    background: rgba(139,26,26,0.15); border: 1px solid rgba(192,57,43,0.4);
+    border-radius: 3px; padding: 0.6rem 0.75rem;
+    font-size: 0.75rem; color: #e07060; margin-top: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 640px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { transform: translateX(-100%); }
+    #sidebar.open { transform: translateX(0); width: 240px; }
+    #main { margin-left: 0; }
+    .cards-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== VIEWS ===== */
+  .view { display: none; }
+  .view.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- ===== SPLASH ===== -->
+<div id="splash">
+  <div class="splash-runes">⚔ ✦ ⚔</div>
+  <div class="splash-title">CODEX<br>OBSCURA</div>
+  <div class="splash-subtitle">Archives de l'Ordre Démoniaque</div>
+  <div class="splash-enter">— Cliquer pour entrer —</div>
+  <div class="splash-tagline">Que les ténèbres vous accueillent</div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div style="font-size:1.3rem; color:var(--accent2); margin-bottom:0.3rem">⚔</div>
+      <div class="logo-title">CODEX OBSCURA</div>
+      <div class="logo-sub">Archives Suprêmes</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="showView('dashboard')">🏛 Tableau de Bord</div>
+      <div class="nav-item" onclick="showView('registre')">⚔ Registre <span class="badge" id="badge-registre">0</span></div>
+      <div class="nav-item" onclick="showView('cibles')">🎯 Cibles Prioritaires <span class="badge" id="badge-cibles">0</span></div>
+      <div class="nav-item" onclick="showView('missions')">📜 Missions <span class="badge" id="badge-missions">0</span></div>
+      <div class="nav-item" onclick="showView('codex')">📖 Codex</div>
+      <div class="nav-item" onclick="showView('historique')">🕰 Historique</div>
+      <div class="nav-item" onclick="showView('admin')" id="nav-admin" style="display:none">🛡 Administration</div>
+
+      <div class="nav-separator">⚫ Accès Restreint</div>
+      <div class="nav-item secret" id="nav-sphere" onclick="handleSphereClick()">⚫ Sphère Secrète</div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-role" id="sidebar-role">◈ Lecture seule</div>
+      <hr class="divider" style="margin:0.3rem 0">
+      <button class="btn btn-sm" onclick="showLoginModal()" id="btn-login">🔑 Connexion</button>
+      <button class="btn btn-sm btn-red" onclick="logout()" id="btn-logout" style="display:none">Quitter</button>
+      <div class="music-bar" style="justify-content:center; margin-top:0.2rem">
+        <span>♪</span>
+        <button onclick="toggleMusic()" id="btn-music" title="Musique">▶</button>
+        <button onclick="nextTrack()" title="Suivant">⏭</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <h1 id="topbar-title">Archives Suprêmes</h1>
+      <div class="topbar-actions">
+        <span class="mode-badge" id="mode-badge">◈ Lecture seule</span>
+        <span style="font-size:0.75rem; color:var(--text2)">✦</span>
+        <span class="mode-badge" id="mode-badge2">Éditeur</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div style="text-align:center; padding:1rem 0 1.5rem; border-bottom:1px solid var(--border); margin-bottom:1.5rem;">
+          <div style="font-size:1.5rem; color:var(--accent2); margin-bottom:0.5rem">⚔</div>
+          <div style="font-size:1.2rem; color:var(--gold2); letter-spacing:0.2em; margin-bottom:0.2rem">CODEX OBSCURA</div>
+          <div style="font-size:0.75rem; color:var(--text2); letter-spacing:0.1em">Codex de l'Ordre des Pourfendeurs</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">⚔</div>
+            <div class="stat-num" id="stat-pourfendeurs">0</div>
+            <div class="stat-label">Pourfendeurs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👑</div>
+            <div class="stat-num" id="stat-piliers">0</div>
+            <div class="stat-label">Piliers Actifs</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✦</div>
+            <div class="stat-num" id="stat-service">0</div>
+            <div class="stat-label">En Service</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">💀</div>
+            <div class="stat-num" id="stat-demons">0</div>
+            <div class="stat-label">Démons Ciblés</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📜</div>
+            <div class="stat-num" id="stat-missions">0</div>
+            <div class="stat-label">Missions Actives</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✝</div>
+            <div class="stat-num" id="stat-tombes">0</div>
+            <div class="stat-label">Tombés au Combat</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTRE -->
+      <div class="view" id="view-registre">
+        <div class="section-header">
+          <h2>⚔ Registre des Pourfendeurs</h2>
+          <button class="btn btn-gold btn-sm editor-only" onclick="openModal('modal-pourfendeur')" style="display:none">+ Ajouter</button>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="filterRegistre('all')">Tous</button>
+          <button class="filter-tab" onclick="filterRegistre('alive')">● En service</button>
+          <button class="filter-tab" onclick="filterRegistre('dead')">✝ Décédés</button>
+          <button class="filter-tab" onclick="filterRegistre('retired')">◈ Retraités</button>
+        </div>
+        <div class="search-bar">
+          <span style="color:var(--text2)">🔍</span>
+          <input type="text" placeholder="Rechercher un pourfendeur…" oninput="searchRegistre(this.value)">
+        </div>
+        <div class="cards-grid fade-in" id="registre-list"></div>
+      </div>
+
+      <!-- CIBLES -->
+      <div class="view" id="view-cibles">
+        <div class="section-header">
+          <h2>🎯 Cibles Prioritaires</h2>
+          <button class="btn btn-red btn-sm editor-only" onclick="openModal('modal-cible')" style="display:none">+ Désigner une Cible</button>
+        </div>
+        <div class="cards-grid fade-in" id="cibles-list"></div>
+      </div>
+
+      <!-- MISSIONS -->
+      <div class="view" id="view-missions">
+        <div class="section-header">
+          <h2>📜 Tableau des Missions</h2>
+          <button class="btn btn-gold btn-sm editor-only" onclick="openModal('modal-mission')" style="display:none">+ Nouvelle Mission</button>
+        </div>
+        <div class="missions-board fade-in">
+          <div class="mission-col">
+            <div class="col-header">⏳ En Attente</div>
+            <div id="missions-attente"></div>
+          </div>
+          <div class="mission-col">
+            <div class="col-header">⚔ En Cours</div>
+            <div id="missions-encours"></div>
+          </div>
+          <div class="mission-col">
+            <div class="col-header">✓ Terminées</div>
+            <div id="missions-terminees"></div>
+          </div>
+          <div class="mission-col">
+            <div class="col-header">✗ Échec</div>
+            <div id="missions-echec"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CODEX -->
+      <div class="view" id="view-codex">
+        <div class="section-header">
+          <h2>📖 Codex de l'Ordre</h2>
+        </div>
+        <p style="font-size:0.78rem; color:var(--text2); font-style:italic; margin-bottom:1.2rem">Connaissance interdite — Réservée aux initiés</p>
+        <div id="codex-sections"></div>
+      </div>
+
+      <!-- HISTORIQUE -->
+      <div class="view" id="view-historique">
+        <div class="section-header">
+          <h2>🕰 Historique</h2>
+        </div>
+        <div class="filter-tabs" style="margin-bottom:1rem">
+          <button class="filter-tab active" onclick="filterHistorique('all')">Tout</button>
+          <button class="filter-tab" onclick="filterHistorique('add')">Ajouts</button>
+          <button class="filter-tab" onclick="filterHistorique('edit')">Éditions</button>
+          <button class="filter-tab" onclick="filterHistorique('del')">Suppressions</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Cible</th>
+                <th>Détail</th>
+                <th>Par</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="historique-body"></tbody>
+          </table>
+        </div>
+        <div id="historique-empty" class="empty-state" style="display:none">
+          <div class="empty-icon">🕰</div>
+          Aucune entrée dans le journal.
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="view" id="view-admin">
+        <div class="section-header">
+          <h2>🛡 Administration</h2>
+        </div>
+        <div class="admin-section">
+          <h3>🔐 Liste Blanche Steam</h3>
+          <div id="whitelist-list"></div>
+          <hr class="divider">
+          <button class="btn btn-gold btn-sm" onclick="openModal('modal-adduser')">➕ Ajouter un Éditeur</button>
+        </div>
+      </div>
+
+      <!-- SPHÈRE -->
+      <div class="view" id="view-sphere">
+        <div class="secret-header">
+          <h2>⚫ Sphère Secrète</h2>
+          <p>Opérations classifiées — Accès restreint au personnel autorisé</p>
+        </div>
+        <div class="section-header">
+          <h2 style="color:#a060e0">Règles d'Opération</h2>
+        </div>
+        <div class="rules-list" id="rules-list"></div>
+        <hr class="divider">
+        <div class="section-header">
+          <h2 style="color:#a060e0">Opérations Secrètes</h2>
+          <button class="btn btn-sm editor-only" style="border-color:#6a3fa0; color:#a060e0; display:none" onclick="openModal('modal-op')">+ Nouvelle Opération</button>
+        </div>
+        <div id="ops-list"></div>
+        <p style="font-size:0.65rem; color:#443355; text-align:center; margin-top:2rem">⚫ Ces règles sont gravées dans le sang. Leur violation est punie de la peine capitale sans procès. ⚫</p>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- ===== MODALS ===== -->
+
+<!-- LOGIN -->
+<div class="modal-overlay hidden" id="modal-login">
+  <div class="modal login-modal">
+    <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+
+    <div class="login-step active" id="login-step-1">
+      <div class="modal-title">🔑 Connexion — Accès Éditeur</div>
+      <div class="login-info">
+        Entrez votre <strong>Steam ID 64</strong> pour accéder aux fonctions d'édition.<br>
+        Votre ID commence par <strong>7656119…</strong> — trouvez-le sur <em>steamid.io</em>
+      </div>
+      <div class="form-group">
+        <label>Steam ID 64</label>
+        <input type="text" id="input-steamid" placeholder="76561198…" maxlength="17">
+      </div>
+      <div class="form-actions">
+        <button class="btn" onclick="closeModal('modal-login')">Annuler</button>
+        <button class="btn btn-gold" onclick="loginStep2()">Continuer →</button>
+      </div>
+    </div>
+
+    <div class="login-step" id="login-step-2">
+      <div class="modal-title">Première Connexion</div>
+      <div class="login-info">
+        C'est votre première connexion. Choisissez un <strong>code secret</strong> que vous seul connaissez. Gardez-le précieusement — il vous sera demandé à chaque connexion.
+      </div>
+      <div class="form-group">
+        <label>Choisir un code secret</label>
+        <input type="password" id="input-code-new" placeholder="••••••">
+      </div>
+      <div class="form-group">
+        <label>Confirmer le code</label>
+        <input type="password" id="input-code-confirm" placeholder="••••••">
+      </div>
+      <div class="form-actions">
+        <button class="btn" onclick="goLoginStep(1)">← Retour</button>
+        <button class="btn btn-gold" onclick="setFirstCode()">Valider mon Code ✓</button>
+      </div>
+    </div>
+
+    <div class="login-step" id="login-step-3">
+      <div class="modal-title">Code Secret</div>
+      <div class="login-info">Entrez votre <strong>code secret</strong> pour accéder à l'édition.</div>
+      <div class="form-group">
+        <label>Code secret</label>
+        <input type="password" id="input-code" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="form-actions">
+        <button class="btn" onclick="goLoginStep(1)">← Retour</button>
+        <button class="btn btn-gold" onclick="doLogin()">Accéder aux Archives ⚔</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CREDENTIALS -->
+<div class="modal-overlay hidden" id="modal-creds">
+  <div class="modal login-modal">
+    <button class="modal-close" onclick="closeModal('modal-creds')">✕</button>
+    <div class="modal-title">🔑 Mes Identifiants</div>
+    <p style="font-size:0.78rem; color:var(--text2); margin-bottom:1rem">Conservez ces informations pour vous connecter depuis un autre appareil.</p>
+    <div class="creds-box">
+      <div class="creds-row">
+        <span class="creds-label">Steam ID 64</span>
+        <span class="creds-val" id="creds-steamid">—</span>
+        <button class="creds-copy" onclick="copyText('creds-steamid')">— Copier</button>
+      </div>
+      <div class="creds-row">
+        <span class="creds-label">Code Secret</span>
+        <span class="creds-val" id="creds-code">••••••</span>
+        <button class="creds-copy" onclick="toggleCredsCode()">Afficher</button>
+      </div>
+    </div>
+    <div class="warning-box">⚠ Ne partagez jamais votre code secret avec quelqu'un d'autre que vous-même.</div>
+  </div>
+</div>
+
+<!-- POURFENDEUR -->
+<div class="modal-overlay hidden" id="modal-pourfendeur">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-pourfendeur')">✕</button>
+    <div class="modal-title" id="modal-pourf-title">Nouvelle Fiche de Service</div>
+    <div class="form-group">
+      <label>Nom du Pourfendeur</label>
+      <input type="text" id="pourf-nom" placeholder="Nom complet">
+    </div>
+    <div class="form-group">
+      <label>Rang</label>
+      <select id="pourf-rang">
+        <option>Maître des Pourfendeurs</option>
+        <option>Conseiller du Maître</option>
+        <option>Pilier — Hashira</option>
+        <option>Kinoe — Rang 1</option>
+        <option>Kinoto — Rang 2</option>
+        <option>Hinoe — Rang 3</option>
+        <option>Hinoto — Rang 4</option>
+        <option>Tsuchinoe — Rang 5</option>
+        <option>Tsuchinoto — Rang 6</option>
+        <option>Kanoe — Rang 7</option>
+        <option>Kanoto — Rang 8</option>
+        <option>Mizunoe — Rang 9</option>
+        <option>Mizunoto — Rang 10</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Souffle</label>
+      <select id="pourf-souffle">
+        <option>Souffle de l'Eau</option>
+        <option>Souffle de la Flamme</option>
+        <option>Souffle de la Foudre</option>
+        <option>Souffle de la Fleur</option>
+        <option>Souffle de la Roche</option>
+        <option>Souffle de la Brume</option>
+        <option>Souffle du Son</option>
+        <option>Autre / Dérivé</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Statut</label>
+      <select id="pourf-statut">
+        <option value="alive">Vivant — En service</option>
+        <option value="dead">Décédé</option>
+        <option value="retired">Retraité</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Jours de service</label>
+      <input type="number" id="pourf-jours" placeholder="0" min="0">
+    </div>
+    <div class="form-group">
+      <label>Brigade / Unité</label>
+      <input type="text" id="pourf-brigade" placeholder="Nom de l'unité">
+    </div>
+    <div class="form-group">
+      <label>Observations</label>
+      <textarea id="pourf-obs" placeholder="Notes, observations…"></textarea>
+    </div>
+    <input type="hidden" id="pourf-id">
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-pourfendeur')">Annuler</button>
+      <button class="btn btn-gold" onclick="savePourfendeur()">Sceller la Fiche</button>
+    </div>
+  </div>
+</div>
+
+<!-- CIBLE -->
+<div class="modal-overlay hidden" id="modal-cible">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-cible')">✕</button>
+    <div class="modal-title">Nouvel Avis de Recherche</div>
+    <div class="form-group">
+      <label>Prénom</label>
+      <input type="text" id="cible-prenom" placeholder="Prénom">
+    </div>
+    <div class="form-group">
+      <label>Nom</label>
+      <input type="text" id="cible-nom" placeholder="Nom">
+    </div>
+    <div class="form-group">
+      <label>Rang du Pourfendeur</label>
+      <select id="cible-rang" onchange="updatePriority()">
+        <option value="">Sélectionnez un rang</option>
+        <option value="1">Maître des Pourfendeurs</option>
+        <option value="1">Conseiller du Maître</option>
+        <option value="1">Pilier — Hashira</option>
+        <option value="2">Kinoe — Rang 1</option>
+        <option value="2">Kinoto — Rang 2</option>
+        <option value="2">Hinoe — Rang 3</option>
+        <option value="3">Tsuchinoe — Rang 5</option>
+        <option value="3">Kanoe — Rang 7</option>
+        <option value="3">Mizunoto — Rang 10</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Niveau de Priorité (auto)</label>
+      <input type="text" id="cible-priorite-display" readonly placeholder="Sélectionnez un rang" style="color:var(--gold)">
+      <input type="hidden" id="cible-priorite">
+    </div>
+    <div class="form-group">
+      <label>Motif de Recherche</label>
+      <textarea id="cible-motif" placeholder="Motif de la désignation…"></textarea>
+    </div>
+    <input type="hidden" id="cible-id">
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-cible')">Annuler</button>
+      <button class="btn btn-red" onclick="saveCible()">Émettre l'Avis de Recherche</button>
+    </div>
+  </div>
+</div>
+
+<!-- MISSION -->
+<div class="modal-overlay hidden" id="modal-mission">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-mission')">✕</button>
+    <div class="modal-title" id="modal-mission-title">Nouvelle Mission</div>
+    <div class="form-group">
+      <label>Titre de la Mission</label>
+      <input type="text" id="mission-titre" placeholder="Intitulé de la mission">
+    </div>
+    <div class="form-group">
+      <label>Priorité</label>
+      <select id="mission-priorite">
+        <option value="haute">Haute — Urgente</option>
+        <option value="normale" selected>Normale</option>
+        <option value="basse">Basse</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Statut</label>
+      <select id="mission-statut">
+        <option value="attente">En Attente</option>
+        <option value="encours">En Cours</option>
+        <option value="terminee">Terminée</option>
+        <option value="echec">Échec</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Membres Assignés (séparés par virgules)</label>
+      <input type="text" id="mission-membres" placeholder="Tanjiro, Nezuko, Inosuke…">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="mission-desc" placeholder="Détails de la mission…"></textarea>
+    </div>
+    <input type="hidden" id="mission-id">
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-mission')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveMission()">Enregistrer la Mission</button>
+    </div>
+  </div>
+</div>
+
+<!-- OPÉRATION SECRÈTE -->
+<div class="modal-overlay hidden" id="modal-op">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-op')">✕</button>
+    <div class="modal-title">Nouvelle Opération</div>
+    <div class="form-group">
+      <label>Type d'opération</label>
+      <select id="op-type">
+        <option>Élimination</option>
+        <option>Torture / Interrogatoire</option>
+        <option>Surveillance</option>
+        <option>Infiltration</option>
+        <option>Capture</option>
+        <option>Autre</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Priorité</label>
+      <select id="op-priorite">
+        <option value="normale">Normale</option>
+        <option value="haute">Haute</option>
+        <option value="critique">Critique</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Cible</label>
+      <input type="text" id="op-cible" placeholder="Nom de la cible">
+    </div>
+    <div class="form-group">
+      <label>Opérateur assigné</label>
+      <input type="text" id="op-operateur" placeholder="Nom de l'opérateur">
+    </div>
+    <div class="form-group">
+      <label>Statut</label>
+      <select id="op-statut">
+        <option value="attente">En attente</option>
+        <option value="encours">En cours</option>
+        <option value="terminee">Terminée</option>
+        <option value="echec">Échec</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Notes opérationnelles</label>
+      <textarea id="op-notes" placeholder="Informations classifiées…"></textarea>
+    </div>
+    <input type="hidden" id="op-id">
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-op')">Annuler</button>
+      <button class="btn" style="border-color:#6a3fa0; color:#a060e0" onclick="saveOp()">Sceller l'Opération</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD USER -->
+<div class="modal-overlay hidden" id="modal-adduser">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-adduser')">✕</button>
+    <div class="modal-title">➕ Ajouter un Éditeur</div>
+    <div class="form-group">
+      <label>Steam ID 64</label>
+      <input type="text" id="user-steamid" placeholder="76561198…">
+    </div>
+    <div class="form-group">
+      <label>Nom affiché</label>
+      <input type="text" id="user-nom" placeholder="Nom ou pseudo">
+    </div>
+    <div class="form-group">
+      <label>Rôles (plusieurs possibles)</label>
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="role-veilleur" value="veilleur">
+          <div><div>Veilleur</div><div class="checkbox-desc">Accès au registre, cibles et missions</div></div>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="role-sphere" value="sphere">
+          <div><div>Sphère Secrète</div><div class="checkbox-desc">Accès aux opérations secrètes</div></div>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="role-adminsphere" value="adminsphere">
+          <div><div>Admin Sphère</div><div class="checkbox-desc">Historique + gestion, sans Sphère Secrète</div></div>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="role-admin" value="admin">
+          <div><div>Admin</div><div class="checkbox-desc">Accès complet à tout</div></div>
+        </label>
+      </div>
+    </div>
+    <p class="form-hint">La personne ajoutée pourra choisir son code secret lors de sa première connexion.</p>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-adduser')">Annuler</button>
+      <button class="btn btn-gold" onclick="addUser()">+ Ajouter à la Liste Blanche</button>
+    </div>
+  </div>
+</div>
+
+<!-- ROLES MODAL -->
+<div class="modal-overlay hidden" id="modal-roles">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-roles')">✕</button>
+    <div class="modal-title">Changer les rôles</div>
+    <div class="form-group">
+      <label>Rôles assignés (plusieurs possibles)</label>
+      <div class="checkbox-group" id="roles-checks"></div>
+    </div>
+    <input type="hidden" id="roles-target-id">
+    <p class="form-hint">Au moins un rôle requis. Les changements prennent effet à la prochaine connexion.</p>
+    <div class="form-actions">
+      <button class="btn" onclick="closeModal('modal-roles')">Annuler</button>
+      <button class="btn btn-gold" onclick="saveRoles()">✔ Confirmer les rôles</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- ===== FIREBASE + SCRIPTS ===== -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getDatabase, ref, set, get, push, onValue, remove, update
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// =============================================
+// ⚙️ CONFIGURATION FIREBASE — À MODIFIER
+// Remplacez les valeurs ci-dessous par vos infos Firebase
+// =============================================
+const firebaseConfig = {
+  apiKey: "AIzaSyDtcyAuyKTiq9iomznYN8ad4s-t65vhY6Y",
+  authDomain: "demonarium-6dec3.firebaseapp.com",
+  databaseURL: "https://demonarium-6dec3-default-rtdb.firebaseio.com",
+  projectId: "demonarium-6dec3",
+  storageBucket: "demonarium-6dec3.firebasestorage.app",
+  messagingSenderId: "556426577382",
+  appId: "1:556426577382:web:5897dca8d752fe8b524227",
+  measurementId: "G-5V33E56877"
+};
+// =============================================
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ===== STATE =====
+let state = {
+  user: null,     // { steamId, name, roles, code }
+  registre: {},
+  cibles: {},
+  missions: {},
+  ops: {},
+  whitelist: {},
+  historique: [],
+  registreFilter: 'all',
+  registreSearch: '',
+  historiqueFilter: 'all',
+  editingPourfendeurId: null,
+  editingMissionId: null,
+  editingOpId: null,
+};
+
+// ===== INIT =====
+window.addEventListener('DOMContentLoaded', () => {
+  // Restore session
+  const saved = localStorage.getItem('codex_session');
+  if (saved) {
+    try { state.user = JSON.parse(saved); } catch(e) {}
+  }
+
+  // Firebase listeners
+  onValue(ref(db, 'registre'), snap => {
+    state.registre = snap.val() || {};
+    renderRegistre(); updateStats();
+  });
+  onValue(ref(db, 'cibles'), snap => {
+    state.cibles = snap.val() || {};
+    renderCibles(); updateStats();
+  });
+  onValue(ref(db, 'missions'), snap => {
+    state.missions = snap.val() || {};
+    renderMissions(); updateStats();
+  });
+  onValue(ref(db, 'ops'), snap => {
+    state.ops = snap.val() || {};
+    renderOps();
+  });
+  onValue(ref(db, 'whitelist'), snap => {
+    state.whitelist = snap.val() || {};
+    renderWhitelist();
+  });
+  onValue(ref(db, 'historique'), snap => {
+    const raw = snap.val() || {};
+    state.historique = Object.entries(raw)
+      .map(([k,v]) => ({...v, _key: k}))
+      .sort((a,b) => b.ts - a.ts);
+    renderHistorique();
+  });
+
+  updateUI();
+  renderCodex();
+  renderRules();
+});
+
+// ===== SPLASH =====
+document.getElementById('splash').addEventListener('click', () => {
+  document.getElementById('splash').classList.add('hide');
+  document.getElementById('app').style.display = 'flex';
+  setTimeout(() => document.getElementById('splash').remove(), 1000);
+});
+
+// ===== NAVIGATION =====
+window.showView = (v) => {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  // highlight nav
+  document.querySelectorAll('.nav-item').forEach(el => {
+    if (el.getAttribute('onclick')?.includes("'"+v+"'")) el.classList.add('active');
+  });
+  document.getElementById('topbar-title').textContent = {
+    dashboard: 'Archives Suprêmes',
+    registre: 'Registre des Pourfendeurs',
+    cibles: 'Cibles Prioritaires',
+    missions: 'Tableau des Missions',
+    codex: 'Codex de l\'Ordre',
+    historique: 'Historique',
+    admin: 'Administration',
+    sphere: 'Sphère Secrète'
+  }[v] || 'Archives';
+};
+
+// ===== AUTH =====
+window.showLoginModal = () => {
+  goLoginStep(1);
+  openModal('modal-login');
+};
+window.goLoginStep = (n) => {
+  document.querySelectorAll('.login-step').forEach(el => el.classList.remove('active'));
+  document.getElementById('login-step-'+n).classList.add('active');
+};
+window.loginStep2 = async () => {
+  const steamId = document.getElementById('input-steamid').value.trim();
+  if (!steamId.match(/^[0-9]{17}$/)) { toast('Steam ID invalide (17 chiffres requis)', 'error'); return; }
+
+  const snap = await get(ref(db, 'whitelist/'+steamId));
+  if (!snap.exists()) { toast('Steam ID non autorisé', 'error'); return; }
+
+  const data = snap.val();
+  if (!data.code) {
+    state._pendingUser = { steamId, ...data };
+    goLoginStep(2);
+  } else {
+    state._pendingUser = { steamId, ...data };
+    goLoginStep(3);
+  }
+};
+window.setFirstCode = async () => {
+  const code = document.getElementById('input-code-new').value;
+  const confirm = document.getElementById('input-code-confirm').value;
+  if (!code || code.length < 4) { toast('Code trop court (min 4 caractères)', 'error'); return; }
+  if (code !== confirm) { toast('Codes différents', 'error'); return; }
+  const u = state._pendingUser;
+  await update(ref(db, 'whitelist/'+u.steamId), { code });
+  state.user = { ...u, code };
+  localStorage.setItem('codex_session', JSON.stringify(state.user));
+  closeModal('modal-login');
+  updateUI();
+  toast('Bienvenue, '+u.name+' !', 'success');
+};
+window.doLogin = () => {
+  const code = document.getElementById('input-code').value;
+  if (code !== state._pendingUser.code) { toast('Code incorrect', 'error'); return; }
+  state.user = { ...state._pendingUser };
+  localStorage.setItem('codex_session', JSON.stringify(state.user));
+  closeModal('modal-login');
+  updateUI();
+  toast('Accès accordé ⚔', 'success');
+};
+window.logout = () => {
+  state.user = null;
+  localStorage.removeItem('codex_session');
+  updateUI();
+  toast('Déconnecté', 'info');
+};
+
+function hasRole(...roles) {
+  if (!state.user) return false;
+  const r = state.user.roles || [];
+  if (r.includes('admin')) return true;
+  return roles.some(role => r.includes(role));
+}
+
+function updateUI() {
+  const isEditor = !!state.user;
+  const isAdmin = hasRole('admin', 'adminsphere');
+  const hasSphere = hasRole('sphere', 'admin');
+
+  document.getElementById('btn-login').style.display = isEditor ? 'none' : '';
+  document.getElementById('btn-logout').style.display = isEditor ? '' : 'none';
+  document.getElementById('nav-admin').style.display = isAdmin ? '' : 'none';
+
+  const sphereNav = document.getElementById('nav-sphere');
+  sphereNav.classList.toggle('unlocked', hasSphere);
+
+  document.getElementById('sidebar-role').innerHTML = state.user
+    ? `<span>${state.user.name}</span> — ${(state.user.roles||[]).join(', ')}`
+    : '◈ Lecture seule';
+
+  const modeBadge = document.getElementById('mode-badge');
+  const modeBadge2 = document.getElementById('mode-badge2');
+  modeBadge.textContent = isEditor ? '✦ Éditeur' : '◈ Lecture seule';
+  modeBadge.classList.toggle('editor', isEditor);
+  modeBadge2.style.display = isEditor ? '' : 'none';
+
+  // Editor-only buttons
+  document.querySelectorAll('.editor-only').forEach(el => {
+    el.style.display = isEditor ? '' : 'none';
+  });
+
+  // Credentials display
+  if (state.user) {
+    document.getElementById('creds-steamid').textContent = state.user.steamId;
+    document.getElementById('mode-badge2').onclick = () => openModal('modal-creds');
+  }
+}
+
+// ===== SPHERE ACCESS =====
+window.handleSphereClick = () => {
+  if (hasRole('sphere', 'admin')) {
+    showView('sphere');
+  } else if (state.user) {
+    toast('Accès refusé — Sphère Secrète', 'error');
+  } else {
+    toast('Connexion requise', 'info');
+    showLoginModal();
+  }
+};
+
+// ===== STATS =====
+function updateStats() {
+  const registre = Object.values(state.registre);
+  const piliers = registre.filter(r => r.rang?.includes('Pilier')).length;
+  const service = registre.filter(r => r.statut === 'alive').length;
+  const tombes = registre.filter(r => r.statut === 'dead').length;
+  const cibles = Object.keys(state.cibles).length;
+  const missionsActives = Object.values(state.missions).filter(m => m.statut === 'encours').length;
+
+  document.getElementById('stat-pourfendeurs').textContent = registre.length;
+  document.getElementById('stat-piliers').textContent = piliers;
+  document.getElementById('stat-service').textContent = service;
+  document.getElementById('stat-demons').textContent = cibles;
+  document.getElementById('stat-missions').textContent = missionsActives;
+  document.getElementById('stat-tombes').textContent = tombes;
+
+  document.getElementById('badge-registre').textContent = registre.length;
+  document.getElementById('badge-cibles').textContent = cibles;
+  document.getElementById('badge-missions').textContent = missionsActives;
+}
+
+// ===== REGISTRE =====
+window.filterRegistre = (f) => {
+  state.registreFilter = f;
+  document.querySelectorAll('#view-registre .filter-tab').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  renderRegistre();
+};
+window.searchRegistre = (q) => { state.registreSearch = q.toLowerCase(); renderRegistre(); };
+
+function renderRegistre() {
+  const list = document.getElementById('registre-list');
+  let items = Object.entries(state.registre);
+  if (state.registreFilter !== 'all') items = items.filter(([,v]) => v.statut === state.registreFilter);
+  if (state.registreSearch) items = items.filter(([,v]) => v.nom?.toLowerCase().includes(state.registreSearch));
+
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚔</div>Aucun pourfendeur enregistré.</div>';
+    return;
+  }
+  list.innerHTML = items.map(([id, p]) => {
+    const statusClass = { alive:'status-alive', dead:'status-dead', retired:'status-retired' }[p.statut] || 'status-alive';
+    const statusLabel = { alive:'En service', dead:'Décédé', retired:'Retraité' }[p.statut] || p.statut;
+    return `<div class="card">
+      <span class="card-status ${statusClass}">${statusLabel}</span>
+      <div class="card-header">
+        <div class="card-avatar">⚔</div>
+        <div>
+          <div class="card-name">${p.nom || '—'}</div>
+          <div class="card-rank">${p.rang || '—'}</div>
+          <div class="card-breath">${p.souffle || ''}</div>
+        </div>
+      </div>
+      ${p.brigade ? `<div class="info-row"><span>🛡</span><span>${p.brigade}</span></div>` : ''}
+      ${p.jours ? `<div class="info-row"><span>📅</span><span>${p.jours} jours de service</span></div>` : ''}
+      ${p.obs ? `<div style="font-size:0.72rem; color:var(--text2); margin-top:0.4rem; line-height:1.5">${p.obs}</div>` : ''}
+      <div class="card-footer">
+        <span></span>
+        <div class="card-actions">
+          ${state.user ? `<button class="btn btn-sm" onclick="editPourfendeur('${id}')">Modifier</button>
+          <button class="btn btn-sm btn-red" onclick="deletePourfendeur('${id}')">✕</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openModal = (id) => {
+  if (id === 'modal-pourfendeur') {
+    state.editingPourfendeurId = null;
+    document.getElementById('modal-pourf-title').textContent = 'Nouvelle Fiche de Service';
+    ['pourf-nom','pourf-rang','pourf-souffle','pourf-statut','pourf-jours','pourf-brigade','pourf-obs'].forEach(f => {
+      const el = document.getElementById(f);
+      if (el) el.value = el.tagName === 'SELECT' ? el.options[0]?.value : '';
+    });
+  }
+  if (id === 'modal-mission') {
+    state.editingMissionId = null;
+    document.getElementById('modal-mission-title').textContent = 'Nouvelle Mission';
+    ['mission-titre','mission-priorite','mission-statut','mission-membres','mission-desc'].forEach(f => {
+      const el = document.getElementById(f);
+      if (el) el.value = el.tagName === 'SELECT' ? el.options[0]?.value : '';
+    });
+  }
+  document.getElementById(id).classList.remove('hidden');
+};
+window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
+
+window.editPourfendeur = (id) => {
+  const p = state.registre[id];
+  if (!p) return;
+  state.editingPourfendeurId = id;
+  document.getElementById('modal-pourf-title').textContent = 'Modifier la Fiche';
+  document.getElementById('pourf-nom').value = p.nom || '';
+  document.getElementById('pourf-rang').value = p.rang || '';
+  document.getElementById('pourf-souffle').value = p.souffle || '';
+  document.getElementById('pourf-statut').value = p.statut || 'alive';
+  document.getElementById('pourf-jours').value = p.jours || '';
+  document.getElementById('pourf-brigade').value = p.brigade || '';
+  document.getElementById('pourf-obs').value = p.obs || '';
+  document.getElementById('modal-pourfendeur').classList.remove('hidden');
+};
+
+window.savePourfendeur = async () => {
+  if (!state.user) { toast('Connexion requise', 'error'); return; }
+  const data = {
+    nom: document.getElementById('pourf-nom').value.trim(),
+    rang: document.getElementById('pourf-rang').value,
+    souffle: document.getElementById('pourf-souffle').value,
+    statut: document.getElementById('pourf-statut').value,
+    jours: document.getElementById('pourf-jours').value,
+    brigade: document.getElementById('pourf-brigade').value.trim(),
+    obs: document.getElementById('pourf-obs').value.trim(),
+    updatedAt: Date.now(),
+  };
+  if (!data.nom) { toast('Nom requis', 'error'); return; }
+
+  if (state.editingPourfendeurId) {
+    await update(ref(db, 'registre/'+state.editingPourfendeurId), data);
+    logAction('edit', 'Registre', data.nom);
+    toast('Fiche mise à jour', 'success');
+  } else {
+    data.createdAt = Date.now();
+    await push(ref(db, 'registre'), data);
+    logAction('add', 'Registre', data.nom);
+    toast('Fiche scellée', 'success');
+  }
+  closeModal('modal-pourfendeur');
+};
+
+window.deletePourfendeur = async (id) => {
+  if (!confirm('Supprimer cette fiche ?')) return;
+  const nom = state.registre[id]?.nom;
+  await remove(ref(db, 'registre/'+id));
+  logAction('del', 'Registre', nom);
+  toast('Fiche supprimée', 'info');
+};
+
+// ===== CIBLES =====
+function renderCibles() {
+  const list = document.getElementById('cibles-list');
+  const items = Object.entries(state.cibles);
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div>Aucune cible désignée.</div>';
+    return;
+  }
+  list.innerHTML = items.map(([id, c]) => {
+    const pClass = ['','priority-1','priority-2','priority-3'][c.priorite] || 'priority-3';
+    const pLabel = ['','PRIORITÉ I','PRIORITÉ II','PRIORITÉ III'][c.priorite] || '';
+    return `<div class="card target-card">
+      <div class="card-header">
+        <div class="card-avatar" style="font-size:1.5rem">🎯</div>
+        <div>
+          <div class="card-name">${c.prenom || ''} ${c.nom || ''}</div>
+          <div class="card-rank">${c.rang || '—'}</div>
+          <span class="priority-badge ${pClass}">${pLabel}</span>
+        </div>
+      </div>
+      ${c.motif ? `<div style="font-size:0.75rem; color:var(--text2); margin-top:0.3rem; line-height:1.5">${c.motif}</div>` : ''}
+      <div class="card-footer">
+        <span></span>
+        <div class="card-actions">
+          ${state.user ? `<button class="btn btn-sm btn-red" onclick="deleteCible('${id}')">Retirer</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.updatePriority = () => {
+  const sel = document.getElementById('cible-rang');
+  const opt = sel.options[sel.selectedIndex];
+  const prio = opt?.value;
+  document.getElementById('cible-priorite').value = prio;
+  document.getElementById('cible-priorite-display').value = ['','Priorité I — Critique','Priorité II — Haute','Priorité III — Normale'][prio] || '';
+};
+
+window.saveCible = async () => {
+  if (!state.user) { toast('Connexion requise', 'error'); return; }
+  const data = {
+    prenom: document.getElementById('cible-prenom').value.trim(),
+    nom: document.getElementById('cible-nom').value.trim(),
+    rang: document.getElementById('cible-rang').value,
+    priorite: parseInt(document.getElementById('cible-priorite').value) || 3,
+    motif: document.getElementById('cible-motif').value.trim(),
+    createdAt: Date.now(),
+  };
+  await push(ref(db, 'cibles'), data);
+  logAction('add', 'Cibles', data.prenom+' '+data.nom);
+  toast('Avis de recherche émis', 'success');
+  closeModal('modal-cible');
+};
+
+window.deleteCible = async (id) => {
+  if (!confirm('Retirer cette cible ?')) return;
+  const nom = `${state.cibles[id]?.prenom} ${state.cibles[id]?.nom}`;
+  await remove(ref(db, 'cibles/'+id));
+  logAction('del', 'Cibles', nom);
+  toast('Cible retirée', 'info');
+};
+
+// ===== MISSIONS =====
+function renderMissions() {
+  const cols = { attente:'missions-attente', encours:'missions-encours', terminee:'missions-terminees', echec:'missions-echec' };
+  Object.values(cols).forEach(id => document.getElementById(id).innerHTML = '');
+  Object.entries(state.missions).forEach(([id, m]) => {
+    const col = cols[m.statut] || cols.attente;
+    const pClass = { haute:'priority-1', normale:'priority-3', basse:'priority-3' }[m.priorite] || 'priority-3';
+    const pLabel = { haute:'HAUTE', normale:'NORMALE', basse:'BASSE' }[m.priorite] || m.priorite;
+    const html = `<div class="mission-card">
+      <div style="display:flex; align-items:flex-start; gap:0.4rem; margin-bottom:0.4rem">
+        <div class="mission-card-title" style="flex:1">${m.titre || '—'}</div>
+        <span class="priority-badge ${pClass}" style="font-size:0.58rem; flex-shrink:0">${pLabel}</span>
+      </div>
+      ${m.membres ? `<div style="font-size:0.7rem; color:var(--gold2); margin-bottom:0.3rem">👥 ${m.membres}</div>` : ''}
+      ${m.desc ? `<div class="mission-card-desc">${m.desc}</div>` : ''}
+      ${state.user ? `<div style="display:flex; gap:0.3rem; margin-top:0.5rem; justify-content:flex-end">
+        <button class="btn btn-sm" onclick="editMission('${id}')">✏</button>
+        <button class="btn btn-sm btn-red" onclick="deleteMission('${id}')">✕</button>
+      </div>` : ''}
+    </div>`;
+    document.getElementById(col).insertAdjacentHTML('beforeend', html);
+  });
+}
+
+window.editMission = (id) => {
+  const m = state.missions[id];
+  if (!m) return;
+  state.editingMissionId = id;
+  document.getElementById('modal-mission-title').textContent = 'Modifier la Mission';
+  document.getElementById('mission-titre').value = m.titre || '';
+  document.getElementById('mission-priorite').value = m.priorite || 'normale';
+  document.getElementById('mission-statut').value = m.statut || 'attente';
+  document.getElementById('mission-membres').value = m.membres || '';
+  document.getElementById('mission-desc').value = m.desc || '';
+  document.getElementById('modal-mission').classList.remove('hidden');
+};
+
+window.saveMission = async () => {
+  if (!state.user) { toast('Connexion requise', 'error'); return; }
+  const data = {
+    titre: document.getElementById('mission-titre').value.trim(),
+    priorite: document.getElementById('mission-priorite').value,
+    statut: document.getElementById('mission-statut').value,
+    membres: document.getElementById('mission-membres').value.trim(),
+    desc: document.getElementById('mission-desc').value.trim(),
+    updatedAt: Date.now(),
+  };
+  if (!data.titre) { toast('Titre requis', 'error'); return; }
+  if (state.editingMissionId) {
+    await update(ref(db, 'missions/'+state.editingMissionId), data);
+    logAction('edit', 'Missions', data.titre);
+    toast('Mission mise à jour', 'success');
+  } else {
+    data.createdAt = Date.now();
+    await push(ref(db, 'missions'), data);
+    logAction('add', 'Missions', data.titre);
+    toast('Mission enregistrée', 'success');
+  }
+  closeModal('modal-mission');
+};
+
+window.deleteMission = async (id) => {
+  if (!confirm('Supprimer cette mission ?')) return;
+  const titre = state.missions[id]?.titre;
+  await remove(ref(db, 'missions/'+id));
+  logAction('del', 'Missions', titre);
+  toast('Mission supprimée', 'info');
+};
+
+// ===== OPÉRATIONS SECRÈTES =====
+function renderOps() {
+  const list = document.getElementById('ops-list');
+  if (!list) return;
+  const items = Object.entries(state.ops);
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚫</div>Aucune opération classifiée.</div>';
+    return;
+  }
+  list.innerHTML = items.map(([id, op]) => {
+    const pClass = { critique:'op-priority-critique', haute:'op-priority-haute', normale:'op-priority-normale' }[op.priorite] || 'op-priority-normale';
+    return `<div class="secret-op-card">
+      <span class="op-type">${op.type || '—'}</span>
+      <span class="priority-badge ${pClass}" style="margin-left:0.5rem; font-size:0.62rem">${(op.priorite||'').toUpperCase()}</span>
+      <div style="margin-top:0.4rem">
+        <span style="color:var(--white); font-size:0.85rem">${op.cible || '—'}</span>
+        ${op.operateur ? `<span style="font-size:0.72rem; color:var(--text2); margin-left:0.5rem">→ ${op.operateur}</span>` : ''}
+      </div>
+      ${op.notes ? `<div style="font-size:0.75rem; color:var(--text2); margin-top:0.4rem; line-height:1.6">${op.notes}</div>` : ''}
+      ${state.user && hasRole('sphere','admin') ? `<div style="display:flex; gap:0.3rem; margin-top:0.5rem; justify-content:flex-end">
+        <button class="btn btn-sm" onclick="editOp('${id}')">✏</button>
+        <button class="btn btn-sm btn-red" onclick="deleteOp('${id}')">✕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+window.editOp = (id) => {
+  const op = state.ops[id];
+  if (!op) return;
+  state.editingOpId = id;
+  document.getElementById('op-type').value = op.type || '';
+  document.getElementById('op-priorite').value = op.priorite || 'normale';
+  document.getElementById('op-cible').value = op.cible || '';
+  document.getElementById('op-operateur').value = op.operateur || '';
+  document.getElementById('op-statut').value = op.statut || 'attente';
+  document.getElementById('op-notes').value = op.notes || '';
+  openModal('modal-op');
+};
+
+window.saveOp = async () => {
+  if (!hasRole('sphere','admin')) { toast('Accès refusé', 'error'); return; }
+  const data = {
+    type: document.getElementById('op-type').value,
+    priorite: document.getElementById('op-priorite').value,
+    cible: document.getElementById('op-cible').value.trim(),
+    operateur: document.getElementById('op-operateur').value.trim(),
+    statut: document.getElementById('op-statut').value,
+    notes: document.getElementById('op-notes').value.trim(),
+    updatedAt: Date.now(),
+  };
+  if (state.editingOpId) {
+    await update(ref(db, 'ops/'+state.editingOpId), data);
+    toast('Opération mise à jour', 'success');
+  } else {
+    data.createdAt = Date.now();
+    await push(ref(db, 'ops'), data);
+    toast('Opération scellée', 'success');
+  }
+  state.editingOpId = null;
+  closeModal('modal-op');
+};
+
+window.deleteOp = async (id) => {
+  if (!confirm('Supprimer cette opération ?')) return;
+  await remove(ref(db, 'ops/'+id));
+  toast('Opération supprimée', 'info');
+};
+
+// ===== HISTORIQUE =====
+function renderHistorique() {
+  const tbody = document.getElementById('historique-body');
+  const empty = document.getElementById('historique-empty');
+  let items = state.historique;
+  if (state.historiqueFilter !== 'all') items = items.filter(h => h.action === state.historiqueFilter);
+  if (!items.length) {
+    tbody.innerHTML = '';
+    empty.style.display = '';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = items.map(h => {
+    const cls = { add:'action-add', edit:'action-edit', del:'action-del' }[h.action] || '';
+    const label = { add:'Ajout', edit:'Édition', del:'Suppression' }[h.action] || h.action;
+    const date = new Date(h.ts).toLocaleString('fr-FR', { day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit' });
+    return `<tr>
+      <td><span class="history-action ${cls}">${label}</span></td>
+      <td>${h.target || '—'}</td>
+      <td style="color:var(--text2)">${h.detail || '—'}</td>
+      <td style="color:var(--gold2)">${h.by || '—'}</td>
+      <td style="color:var(--text2); font-size:0.72rem">${date}</td>
+    </tr>`;
+  }).join('');
+}
+
+window.filterHistorique = (f) => {
+  state.historiqueFilter = f;
+  document.querySelectorAll('#view-historique .filter-tab').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  renderHistorique();
+};
+
+async function logAction(action, target, detail) {
+  await push(ref(db, 'historique'), {
+    action, target, detail,
+    by: state.user?.name || 'Anonyme',
+    ts: Date.now()
+  });
+}
+
+// ===== ADMIN / WHITELIST =====
+function renderWhitelist() {
+  const list = document.getElementById('whitelist-list');
+  if (!list) return;
+  const items = Object.entries(state.whitelist);
+  if (!items.length) {
+    list.innerHTML = '<div class="empty-state" style="padding:1rem">Aucun éditeur enregistré.</div>';
+    return;
+  }
+  list.innerHTML = items.map(([id, u]) => {
+    const roleHtml = (u.roles||[]).map(r => {
+      const cls = { admin:'role-admin', veilleur:'role-veilleur', sphere:'role-sphere', adminsphere:'role-admin' }[r] || '';
+      return `<span class="role-badge ${cls}">${r}</span>`;
+    }).join('');
+    return `<div class="whitelist-item">
+      <div>
+        <div class="wl-name">${u.name || '—'}</div>
+        <div class="wl-id">${id}</div>
+      </div>
+      <div class="wl-roles">${roleHtml}</div>
+      ${hasRole('admin') && state.user?.steamId !== id ? `<div style="display:flex; gap:0.3rem">
+        <button class="btn btn-sm" onclick="openRolesModal('${id}')">Rôles</button>
+        <button class="btn btn-sm btn-red" onclick="removeUser('${id}')">✕</button>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+window.addUser = async () => {
+  if (!hasRole('admin')) { toast('Admin requis', 'error'); return; }
+  const steamId = document.getElementById('user-steamid').value.trim();
+  const name = document.getElementById('user-nom').value.trim();
+  if (!steamId.match(/^[0-9]{17}$/) || !name) { toast('Steam ID (17 chiffres) et nom requis', 'error'); return; }
+  const roles = ['veilleur','sphere','adminsphere','admin'].filter(r => document.getElementById('role-'+r)?.checked);
+  if (!roles.length) { toast('Au moins un rôle requis', 'error'); return; }
+  await set(ref(db, 'whitelist/'+steamId), { name, roles, createdAt: Date.now() });
+  logAction('add', 'Whitelist', name);
+  toast(name+' ajouté', 'success');
+  closeModal('modal-adduser');
+};
+
+window.removeUser = async (id) => {
+  if (!confirm('Retirer cet utilisateur ?')) return;
+  const name = state.whitelist[id]?.name;
+  await remove(ref(db, 'whitelist/'+id));
+  logAction('del', 'Whitelist', name);
+  toast('Utilisateur retiré', 'info');
+};
+
+window.openRolesModal = (id) => {
+  document.getElementById('roles-target-id').value = id;
+  const current = state.whitelist[id]?.roles || [];
+  document.getElementById('roles-checks').innerHTML = ['veilleur','sphere','adminsphere','admin'].map(r => `
+    <label class="checkbox-label">
+      <input type="checkbox" id="modal-role-${r}" value="${r}" ${current.includes(r)?'checked':''}>
+      <div>${r}</div>
+    </label>`).join('');
+  openModal('modal-roles');
+};
+
+window.saveRoles = async () => {
+  const id = document.getElementById('roles-target-id').value;
+  const roles = ['veilleur','sphere','adminsphere','admin'].filter(r => document.getElementById('modal-role-'+r)?.checked);
+  if (!roles.length) { toast('Au moins un rôle requis', 'error'); return; }
+  await update(ref(db, 'whitelist/'+id), { roles });
+  logAction('edit', 'Whitelist', state.whitelist[id]?.name);
+  toast('Rôles mis à jour', 'success');
+  closeModal('modal-roles');
+};
+
+// ===== CODEX =====
+function renderCodex() {
+  const sections = [
+    { icon:'🌊', title:'Les Souffles de Combat', body:`Les Souffles sont des techniques respiratoires codifiées transmises au sein de l'Ordre. Chaque style amplifie les capacités physiques du pourfendeur et détermine ses formes de combat.<br><br>
+<strong>Souffle de l'Eau</strong> — Fluidité et adaptation. Treize formes enchaînées inspirées du mouvement de l'eau.<br>
+<strong>Souffle du Feu</strong> — Intensité et destruction. Techniques explosives à haute vélocité.<br>
+<strong>Souffle de la Foudre</strong> — Vitesse absolue. Un seul coup porté à vitesse fulgurante.<br>
+<strong>Souffle de la Roche</strong> — Endurance et défense. Formes lourdes et impénétrables.<br>
+<strong>Souffle de la Fleur</strong> — Imprévisibilité et grâce. Mouvements rotatifs à 360°.` },
+    { icon:'🩸', title:'Anatomie des Démons', body:`Les démons sont des humains corrompus par le sang de Muzan Kibutsuji. Leur biologie est radicalement altérée, leur conférant des capacités surhumaines et une régénération quasi instantanée.<br><br>
+<strong>Régénération cellulaire</strong> — Les démons se régénèrent de toute blessure en quelques secondes. Seule la décapitation par une lame imprégnée de Soleil (Nichirin) est létale.<br>
+<strong>Arts du Sang (Ketsuijutsu)</strong> — Les démons puissants développent des techniques offensives uniques dérivées de leur sang.<br>
+<strong>Faiblesse solaire</strong> — La lumière du soleil désintègre les démons. Ils opèrent exclusivement de nuit ou dans l'obscurité.<br>
+<strong>Wistéria</strong> — La glycine est toxique pour les démons. Utilisée comme barrière défensive.` },
+    { icon:'⚔', title:"Hiérarchie de l'Ordre", body:`L'Ordre des Pourfendeurs est une organisation secrète structurée en grades stricts. L'avancement est conditionné par les performances au combat et la recommandation des supérieurs.<br><br>
+<strong>Maître des Pourfendeurs</strong> — Chef suprême de l'Ordre. Autorité absolue sur toutes les opérations.<br>
+<strong>Conseiller</strong> — Conseillers directs du Maître. Coordinateurs stratégiques.<br>
+<strong>Pilier</strong> — Neuf combattants d'élite. Chacun maîtrise un Souffle à son apogée.<br>
+<strong>Kinoe → Mizunoto</strong> — Dix grades intermédiaires numérotés par les dix tiges célestes.` },
+    { icon:'📜', title:'Protocoles Opérationnels', body:`<strong>Directive I — Capture prioritaire</strong> — Tout pourfendeur identifié doit être neutralisé et capturé vivant dans la mesure du possible.<br><br>
+<strong>Directive II — Extraction d'informations</strong> — Le sujet capturé doit être soumis à une interrogation prolongée.<br><br>
+<strong>Directive III — Bris de volonté</strong> — Si le sujet résiste, recourir à la privation sensorielle et aux menaces sur ses proches.<br><br>
+<strong>Directive IV — Exploitation des lames</strong> — Confisquer systématiquement toute lame Nichirin.<br><br>
+<strong>Directive V — Élimination contrôlée</strong> — Une fois les informations obtenues, l'élimination doit être discrète.` },
+    { icon:'🗡', title:'Les Lames Nichirin', body:`Les lames Nichirin sont forgées à partir d'un minerai rare extrait des plus hauts sommets — des roches ayant absorbé la lumière solaire depuis des millénaires. Ce métal est le seul matériau capable de décapiter définitivement un démon.<br><br>
+<strong>Teinte de la lame</strong> — Lorsqu'un pourfendeur saisit sa lame pour la première fois, elle prend la couleur correspondant à son Souffle dominant.<br><br>
+<strong>Lame noire</strong> — Couleur extrêmement rare, aucun précédent documenté. Signification inconnue. Les porteurs ont une espérance de vie statistiquement plus faible.` }
+  ];
+  document.getElementById('codex-sections').innerHTML = sections.map((s, i) => `
+    <div class="codex-section">
+      <button class="codex-toggle" onclick="toggleCodex(${i})">
+        <span>${s.icon} ${s.title}</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="codex-body" id="codex-${i}">${s.body}</div>
+    </div>`).join('');
+}
+window.toggleCodex = (i) => {
+  const btn = document.querySelectorAll('.codex-toggle')[i];
+  const body = document.getElementById('codex-'+i);
+  btn.classList.toggle('open');
+  body.classList.toggle('open');
+};
+
+// ===== RULES =====
+function renderRules() {
+  const rules = [
+    { title:'Discrétion Absolue', body:"Aucune information relative à la Sphère Secrète ne doit être divulguée à quiconque n'appartenant pas à ses rangs. Cela inclut les Veilleurs, les officiers extérieurs, et toute autre entité non initiée — quelle que soit leur autorité apparente." },
+    { title:"L'Ombre Avant Tout", body:"La Sphère Secrète n'existe pas. Ses membres opèrent dans l'anonymat le plus total. Toute mission doit être conduite sans laisser de trace identifiable. Les noms, les visages et les méthodes restent dans l'ombre." },
+    { title:"Élimination des Témoins", body:"Tout individu ayant connaissance d'une opération en cours ou de l'existence de la Sphère constitue une menace directe. L'élimination sans sommation est autorisée — et parfois exigée. Aucune hésitation ne sera tolérée." },
+    { title:"Obéissance à la Chaîne de Commandement", body:"Les ordres provenant des échelons supérieurs de la Sphère sont non négociables. Aucune remise en question sur le terrain. L'exécution prime sur la compréhension. Les doutes se formulent après la mission, jamais pendant." },
+    { title:"Aucune Trace, Aucun Lien", body:"Toute communication concernant les opérations passe exclusivement par les canaux officiels de la Sphère. L'utilisation de voies non sécurisées, la conservation de preuves ou d'artefacts compromettants sont strictement interdites." },
+    { title:"La Mission Avant la Vie", body:"En cas de capture ou de compromission grave, l'opérateur doit prioriser l'intégrité de la Sphère. Mourir en silence vaut mieux que trahir par la parole. La Sphère vous a choisi — honorez ce choix jusqu'au bout." }
+  ];
+  const roman = ['I','II','III','IV','V','VI'];
+  document.getElementById('rules-list').innerHTML = rules.map((r, i) => `
+    <div class="rule-item">
+      <button class="rule-toggle" onclick="toggleRule(${i})">
+        <span class="rule-num">${roman[i]}</span>
+        <span>${r.title}</span>
+        <span style="margin-left:auto; color:#6a3fa0">▼</span>
+      </button>
+      <div class="rule-body" id="rule-${i}">${r.body}</div>
+    </div>`).join('');
+}
+window.toggleRule = (i) => {
+  document.getElementById('rule-'+i).classList.toggle('open');
+};
+
+// ===== TOAST =====
+window.toast = (msg, type='info') => {
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+};
+
+// ===== MUSIC =====
+const tracks = [
+  'https://www.youtube.com/embed/videoseries?list=PLI_nnQ9Jm6DGvUEJUCJJ5XiIo0P68hLrK',
+  // Ajouter des URLs de pistes si nécessaire
+];
+let musicPlaying = false;
+window.toggleMusic = () => {
+  musicPlaying = !musicPlaying;
+  document.getElementById('btn-music').textContent = musicPlaying ? '⏸' : '▶';
+  toast(musicPlaying ? '♪ Musique activée' : '♪ Musique en pause', 'info');
+};
+window.nextTrack = () => toast('♪ Piste suivante', 'info');
+
+// ===== CREDS =====
+window.copyText = (id) => {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard?.writeText(text).then(() => toast('Copié !', 'success'));
+};
+window.toggleCredsCode = () => {
+  const el = document.getElementById('creds-code');
+  if (el.textContent === '••••••') {
+    el.textContent = state.user?.code || '—';
+  } else {
+    el.textContent = '••••••';
+  }
+};
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', (e) => { if (e.target === el) el.classList.add('hidden'); });
+});
+</script>
+</body>
+</html>
