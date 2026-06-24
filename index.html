@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800;900&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <title>Demonarium — Archives des Pourfendeurs</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +30,7 @@
     --sidebar-w:268px;
   }
 
-  body { font-family: 'Cinzel', 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+  body { font-family: 'EB Garamond', 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
 
   /* SPLASH */
   #splash {
@@ -204,7 +204,7 @@
   .btn {
     padding: 0.35rem 0.8rem; border: 1px solid var(--border);
     background: transparent; color: var(--text2);
-    font-family: 'Cinzel', 'Georgia', serif; font-size: 0.74rem;
+    font-family: 'EB Garamond', 'Georgia', serif; font-size: 0.74rem;
     cursor: pointer; transition: all 0.15s; border-radius: 2px; letter-spacing: 0.03em;
   }
   .btn:hover { border-color: var(--blue2); color: var(--silver); }
@@ -260,7 +260,7 @@
   .filter-tab {
     padding: 0.25rem 0.7rem; border: 1px solid var(--border);
     background: transparent; color: var(--text2); font-size: 0.7rem;
-    cursor: pointer; border-radius: 20px; transition: all 0.15s; font-family: 'Cinzel', 'Georgia', serif;
+    cursor: pointer; border-radius: 20px; transition: all 0.15s; font-family: 'EB Garamond', 'Georgia', serif;
   }
   .filter-tab:hover { border-color: var(--blue); color: var(--silver); }
   .filter-tab.active { border-color: var(--blue2); color: var(--blue2); background: rgba(90,138,220,0.08); }
@@ -273,7 +273,7 @@
     transition: border-color 0.15s;
   }
   .search-bar:focus-within { border-color: var(--accent); }
-  .search-bar input { background: transparent; border: none; color: var(--white); font-family: 'Cinzel', 'Georgia', serif; font-size: 0.78rem; flex: 1; }
+  .search-bar input { background: transparent; border: none; color: var(--white); font-family: 'EB Garamond', 'Georgia', serif; font-size: 0.78rem; flex: 1; }
   .search-bar input:focus { outline: none; }
   .search-bar input::placeholder { color: var(--text2); }
 
@@ -352,7 +352,7 @@
 
   /* CODEX */
   .codex-item { margin-bottom: 0.35rem; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
-  .codex-btn { width: 100%; padding: 0.8rem 1rem; background: var(--bg3); border: none; color: var(--text); font-family: 'Cinzel', 'Georgia', serif; font-size: 0.8rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.15s; }
+  .codex-btn { width: 100%; padding: 0.8rem 1rem; background: var(--bg3); border: none; color: var(--text); font-family: 'EB Garamond', 'Georgia', serif; font-size: 0.8rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.15s; }
   .codex-btn:hover { background: rgba(90,138,220,0.05); }
   .codex-btn.open { color: var(--silver2); background: rgba(90,138,220,0.06); }
   .codex-arrow { margin-left: auto; font-size: 0.65rem; color: var(--text2); transition: transform 0.2s; }
@@ -379,7 +379,7 @@
   .secret-top h2 { color: #9a6aee; letter-spacing: 0.18em; font-size: 0.9rem; font-weight: normal; }
   .secret-top p { font-size: 0.68rem; color: #352850; margin-top: 0.35rem; }
   .rule-card { background: var(--bg3); border: 1px solid #1e1840; border-radius: 2px; margin-bottom: 0.35rem; overflow: hidden; }
-  .rule-btn { width: 100%; padding: 0.75rem 1rem; background: transparent; border: none; color: #504060; font-family: 'Cinzel', 'Georgia', serif; font-size: 0.78rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; transition: color 0.15s; }
+  .rule-btn { width: 100%; padding: 0.75rem 1rem; background: transparent; border: none; color: #504060; font-family: 'EB Garamond', 'Georgia', serif; font-size: 0.78rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; transition: color 0.15s; }
   .rule-btn:hover { color: #9a6aee; }
   .rule-num { font-size: 0.62rem; color: #302248; font-style: italic; min-width: 1rem; }
   .rule-body { padding: 0.7rem 1rem; font-size: 0.76rem; color: var(--text); line-height: 1.8; border-top: 1px solid #1e1840; display: none; }
@@ -399,7 +399,7 @@
   .modal-close:hover { color: var(--red); }
   .form-group { margin-bottom: 0.8rem; }
   .form-group label { display: block; font-size: 0.64rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.28rem; }
-  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.48rem 0.65rem; background: var(--bg3); border: 1px solid var(--border); color: var(--white); font-family: 'Cinzel', 'Georgia', serif; font-size: 0.78rem; border-radius: 2px; transition: border-color 0.15s; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.48rem 0.65rem; background: var(--bg3); border: 1px solid var(--border); color: var(--white); font-family: 'EB Garamond', 'Georgia', serif; font-size: 0.78rem; border-radius: 2px; transition: border-color 0.15s; }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--blue); }
   .form-group select option { background: var(--bg3); }
   .form-group textarea { resize: vertical; min-height: 75px; line-height: 1.6; }
