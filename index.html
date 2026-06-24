@@ -278,32 +278,45 @@
   .search-bar input::placeholder { color: var(--text2); }
 
   /* CARDS */
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.2rem; }
   .member-card {
     background: var(--bg3); border: 1px solid var(--border);
-    border-radius: 6px; padding: 0; position: relative; transition: border-color 0.18s, box-shadow 0.18s;
+    border-radius: 8px; padding: 0; position: relative; transition: border-color 0.2s, box-shadow 0.2s;
     overflow: hidden;
   }
-  .member-card:hover { border-color: var(--blue2); box-shadow: 0 0 20px rgba(90,138,220,0.15); }
-  .card-header { display: flex; align-items: flex-start; gap: 0; }
+  .member-card:hover { border-color: var(--blue2); box-shadow: 0 0 28px rgba(90,138,220,0.2); }
+  .card-header { display: flex; align-items: stretch; gap: 0; }
   .card-avatar {
-    width: 90px; height: 110px; border-radius: 0;
+    width: 130px; height: 150px; border-radius: 0;
     background: linear-gradient(135deg, var(--bg2), var(--bg));
     border-right: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    font-size: 2.2rem; flex-shrink: 0;
+    font-size: 3rem; flex-shrink: 0;
     overflow: hidden;
   }
-  .card-avatar img { width: 100%; height: 100%; object-fit: cover; }
-  .card-header-info { flex: 1; padding: 0.9rem 1rem 0.7rem; }
-  .card-name { font-size: 1rem; color: var(--white); font-weight: bold; line-height: 1.2; }
-  .card-rank { font-size: 0.7rem; color: var(--blue2); margin-top: 0.2rem; letter-spacing: 0.04em; }
-  .card-breath { font-size: 0.65rem; color: var(--text2); margin-top: 0.1rem; }
-  .card-body { padding: 0.65rem 1rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.12); }
-  .card-status {
-    position: absolute; top: 0.65rem; right: 0.65rem;
-    font-size: 0.58rem; padding: 0.1rem 0.5rem; border-radius: 20px; border: 1px solid;
+  .card-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .card-header-info { flex: 1; padding: 1.1rem 1.2rem 1rem; display: flex; flex-direction: column; justify-content: center; }
+  .card-name { font-size: 1.18rem; color: var(--white); font-weight: bold; line-height: 1.2; letter-spacing: 0.02em; }
+  .card-rank { font-size: 0.78rem; color: var(--blue2); margin-top: 0.3rem; letter-spacing: 0.05em; }
+  .card-breath { font-size: 0.7rem; color: var(--text2); margin-top: 0.15rem; }
+  .card-info-row { display: flex; align-items: center; gap: 0.45rem; font-size: 0.72rem; color: var(--text2); margin-top: 0.3rem; }
+  .card-info-row span:last-child { color: var(--text); }
+  .card-body { padding: 0.75rem 1.2rem; border-top: 1px solid var(--border); background: rgba(0,0,0,0.15); }
+  .card-obs { font-size: 0.76rem; color: var(--text2); line-height: 1.65; }
+  .card-footer {
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-top: 0.55rem; margin-top: 0.5rem;
+    border-top: 1px solid var(--border);
   }
+  .card-actions { display: flex; gap: 0.35rem; }
+  .card-status {
+    position: absolute; top: 0.75rem; right: 0.75rem;
+    font-size: 0.62rem; padding: 0.12rem 0.6rem; border-radius: 20px; border: 1px solid;
+  }
+  .status-alive { color: var(--green); border-color: #2a6a3a; background: rgba(30,90,50,0.15); }
+  .status-dead { color: var(--text2); border-color: #252835; background: rgba(0,0,0,0.2); }
+  .status-retired { color: #7a6aaa; border-color: #3a3060; background: rgba(50,40,80,0.15); }
+
   .photo-upload-row { display: flex; align-items: center; gap: 1rem; }
   .photo-preview {
     width: 90px; height: 90px; border-radius: 6px; flex-shrink: 0;
@@ -313,24 +326,6 @@
     box-shadow: 0 0 12px rgba(90,138,220,0.15);
   }
   .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .card-name { font-size: 0.88rem; color: var(--white); font-weight: bold; line-height: 1.2; }
-  .card-rank { font-size: 0.65rem; color: var(--blue2); margin-top: 0.15rem; letter-spacing: 0.04em; }
-  .card-breath { font-size: 0.63rem; color: var(--text2); margin-top: 0.08rem; }
-  .card-status {
-    position: absolute; top: 0.7rem; right: 0.7rem;
-    font-size: 0.58rem; padding: 0.08rem 0.42rem; border-radius: 20px; border: 1px solid;
-  }
-  .status-alive { color: var(--green); border-color: #2a6a3a; background: rgba(30,90,50,0.15); }
-  .status-dead { color: var(--text2); border-color: #252835; background: rgba(0,0,0,0.2); }
-  .status-retired { color: #7a6aaa; border-color: #3a3060; background: rgba(50,40,80,0.15); }
-  .card-info-row { display: flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; color: var(--text2); margin-bottom: 0.15rem; }
-  .card-info-row span:last-child { color: var(--text); }
-  .card-obs { font-size: 0.72rem; color: var(--text2); line-height: 1.6; }
-  .card-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: 0.65rem; color: var(--text2);
-  }
-  .card-actions { display: flex; gap: 0.25rem; }
 
   /* TARGET CARD */
   .target-card { border-color: #2a1a1e; }
