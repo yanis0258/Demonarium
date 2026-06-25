@@ -583,15 +583,23 @@
   .ha-del { background: rgba(90,20,30,0.2); color: #cc3344; }
 
   /* CODEX */
-  .codex-item { margin-bottom: 0.35rem; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
-  .codex-btn { width: 100%; padding: 0.8rem 1rem; background: var(--bg3); border: none; color: var(--text); font-family: 'EB Garamond', 'Georgia', serif; font-size: 1rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: background 0.15s; }
-  .codex-btn:hover { background: rgba(90,138,220,0.05); }
-  .codex-btn.open { color: var(--silver2); background: rgba(90,138,220,0.06); }
-  .codex-arrow { margin-left: auto; font-size: 0.65rem; color: var(--text2); transition: transform 0.2s; }
+  .codex-item { margin-bottom: 0.6rem; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color 0.2s; }
+  .codex-item:has(.codex-btn.open) { border-color: rgba(90,138,220,0.4); }
+  .codex-btn { width: 100%; padding: 1.1rem 1.3rem; background: var(--bg3); border: none; color: var(--text); font-family: 'EB Garamond', 'Georgia', serif; font-size: 1rem; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 0.7rem; transition: background 0.15s; }
+  .codex-btn:hover { background: rgba(90,138,220,0.07); }
+  .codex-btn.open { color: var(--silver2); background: rgba(90,138,220,0.08); }
+  .codex-arrow { margin-left: auto; font-size: 0.7rem; color: var(--text2); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
   .codex-btn.open .codex-arrow { transform: rotate(180deg); }
-  .codex-body { padding: 0.9rem 1.1rem; font-size: 1.05rem; line-height: 1.85; color: var(--text); border-top: 1px solid var(--border); background: var(--bg2); display: none; font-family: 'Special Elite', 'Georgia', serif; }
-  .codex-body.open { display: block; }
-  .codex-body strong { color: var(--silver2); }
+  .codex-body {
+    padding: 0; max-height: 0; overflow: hidden;
+    font-size: 1.08rem; line-height: 1.95; color: var(--text);
+    border-top: 0px solid var(--border); background: var(--bg2);
+    font-family: 'Special Elite', 'Georgia', serif;
+    transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease, border-top-width 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+  .codex-body.open { max-height: 600px; padding: 1.1rem 1.3rem; border-top-width: 1px; opacity: 1; }
+  .codex-body strong { color: var(--silver2); font-size: 1.05rem; }
 
   /* ADMIN */
   .admin-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 3px; padding: 1.1rem; margin-bottom: 0.9rem; }
@@ -965,6 +973,8 @@
         <option>Lune Supérieure 1</option>
         <option>Dame Au Biwa</option>
         <option>Kibutsuji Muzan</option>
+        <option>Lune Inférieure Référente</option>
+        <option>Lune Supérieure Référente</option>
       </select>
     </div>
     <div class="form-group">
@@ -1698,23 +1708,13 @@ function renderCodex(){
 <strong>Pouvoir Sanguinaire du Sombréclair ⚡</strong> — Vitesse hors du commun, offensive.<br>
 <strong>Pouvoir Sanguinaire de la Glace ⛰️</strong> — Résistance, force hors du commun, technique sanguinaire rapide et forte.<br>
 <strong>Pouvoir Sanguinaire de la Ronce 🌷</strong> — Résistance multipliée, forte aura.`},
-    {icon:'💀',title:'Anatomie des Démons',body:`Les démons sont des humains corrompus par le sang de Muzan Kibutsuji. Leur biologie est radicalement altérée, leur conférant des capacités surhumaines et une régénération quasi instantanée.<br><br>
-<strong>Régénération cellulaire</strong> — Les démons se régénèrent de toute blessure en quelques secondes. Seule la décapitation par une lame Nichirin est létale.<br>
-<strong>Arts du Sang</strong> — Les démons puissants développent des techniques offensives dérivées de leur sang.<br>
-<strong>Faiblesse solaire</strong> — La lumière du soleil désintègre les démons instantanément.<br>
-<strong>Wistéria</strong> — La glycine est toxique pour les démons. Utilisée comme barrière défensive.`},
-    {icon:'📋',title:'Protocoles Opérationnels',body:`<strong>Directive I — Capture prioritaire</strong> — Toute cible identifiée doit être neutralisée et capturée si possible.<br><br>
-<strong>Directive II — Extraction d'informations</strong> — Le sujet capturé doit être soumis à une interrogation prolongée.<br><br>
-<strong>Directive III — Bris de volonté</strong> — Si le sujet résiste, recourir à la privation sensorielle et aux menaces.<br><br>
-<strong>Directive IV — Lames Nichirin</strong> — Confisquer systématiquement toute lame Nichirin ennemie.<br><br>
-<strong>Directive V — Élimination contrôlée</strong> — Une fois les informations obtenues, l'élimination doit être discrète.`},
     {icon:'🌷',title:'La Glycine',body:`La glycine possède des feuilles composées de plusieurs folioles et des tiges ligneuses qui s'enroulent autour des supports. La glycine commune fleurit au printemps, généralement entre avril et mai, et ses fleurs sont regroupées en grappes denses.<br><br>
 Ces fleurs, ont un pouvoir spécifique. Elles permettent de tuer des démons juste en rentrant en contact avec eux.`}
   ];
   document.getElementById('codex-sections').innerHTML=sections.map((s,i)=>`
     <div class="codex-item">
       <button class="codex-btn" onclick="toggleCodex(${i})">
-        <span>${s.icon}</span><span>${s.title}</span><span class="codex-arrow">▾</span>
+        <span style="font-size:1.5rem">${s.icon}</span><span style="font-size:1.25rem;font-family:'Metal Mania',cursive;letter-spacing:0.05em">${s.title}</span><span class="codex-arrow">▾</span>
       </button>
       <div class="codex-body" id="codex-${i}">${s.body}</div>
     </div>`).join('');
