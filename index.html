@@ -356,193 +356,218 @@
   .detail-id { font-family: 'Cinzel Decorative', serif !important; }
 
   /* ═══════════════════════════════════════
-     MODAL DETAIL — Style Dark Fantasy
+     MODAL DETAIL — Style Dossier Cinématique
   ═══════════════════════════════════════ */
-  #modal-detail .modal-overlay { align-items: center; }
   #modal-detail .modal {
-    max-width: 820px; width: 95vw; padding: 0; overflow: hidden;
-    border-radius: 2px;
-    border: 1px solid rgba(58,100,200,0.35);
-    box-shadow: 0 0 0 1px rgba(100,70,20,0.2), 0 30px 80px rgba(0,0,0,0.85), inset 0 0 60px rgba(0,0,0,0.4);
-    background: #07081a;
+    max-width: 900px; width: 96vw; padding: 0; overflow: hidden;
+    border-radius: 4px;
+    border: 1px solid rgba(90,138,220,0.25);
+    box-shadow: 0 0 0 1px rgba(30,40,100,0.3), 0 40px 100px rgba(0,0,0,0.92), 0 0 80px rgba(58,90,200,0.08);
+    background: #06071a;
+    animation: detailOpen 0.3s cubic-bezier(0.34,1.2,0.64,1);
   }
+  @keyframes detailOpen { from{opacity:0;transform:scale(0.96) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)} }
 
-  /* Coins décoratifs */
-  #modal-detail .modal::before,
-  #modal-detail .modal::after {
-    content: ''; position: absolute; width: 18px; height: 18px; z-index: 20; pointer-events: none;
-  }
-  #modal-detail .modal::before { top: -1px; left: -1px; border-top: 2px solid var(--blue2); border-left: 2px solid var(--blue2); }
-  #modal-detail .modal::after  { bottom: -1px; right: -1px; border-bottom: 2px solid var(--blue2); border-right: 2px solid var(--blue2); }
-
-  /* Header — titre + breadcrumb */
+  /* Header */
   .fd-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.6rem 1.2rem 0.5rem;
-    border-bottom: 1px solid rgba(58,100,200,0.2);
-    background: rgba(0,0,0,0.5);
+    padding: 0.7rem 1.4rem 0.6rem;
+    border-bottom: 1px solid rgba(58,100,200,0.18);
+    background: rgba(0,0,5,0.6);
   }
   .fd-breadcrumb {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.52rem;
-    color: rgba(58,100,200,0.55); letter-spacing: 0.22em; text-transform: uppercase;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.58rem;
+    color: rgba(90,138,220,0.5); letter-spacing: 0.25em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.4rem;
   }
-  .fd-breadcrumb span { color: rgba(180,130,50,0.85); }
+  .fd-breadcrumb span { color: rgba(200,168,64,0.9); }
   .fd-close {
-    background: none; border: 1px solid rgba(58,100,200,0.25); color: rgba(58,100,200,0.6);
-    width: 22px; height: 22px; border-radius: 1px; cursor: pointer; font-size: 0.65rem;
+    background: none; border: 1px solid rgba(58,100,200,0.2); color: rgba(90,138,220,0.5);
+    width: 26px; height: 26px; border-radius: 2px; cursor: pointer; font-size: 0.75rem;
     display: flex; align-items: center; justify-content: center; transition: all 0.15s;
   }
-  .fd-close:hover { border-color: rgba(58,100,200,0.7); color: var(--blue2); }
+  .fd-close:hover { border-color: rgba(90,138,220,0.6); color: var(--blue2); background: rgba(58,100,200,0.08); }
 
-  /* Corps principal */
+  /* Corps principal : 2 colonnes */
   .fd-body {
-    display: flex; gap: 0; min-height: 340px;
-    background: linear-gradient(160deg, #08091a 0%, #0b0c1e 100%);
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 400px;
+    background: linear-gradient(160deg, #06071a 0%, #08091e 100%);
     position: relative;
   }
 
-  /* Photo */
+  /* Colonne photo */
+  .fd-photo-col {
+    position: relative; overflow: hidden;
+    background: #04050f;
+    border-right: 1px solid rgba(58,100,200,0.12);
+  }
+  .fd-photo-col::after {
+    content: ''; position: absolute; right: 0; inset-block: 0; width: 60px;
+    background: linear-gradient(90deg, transparent, #06071a);
+    pointer-events: none; z-index: 2;
+  }
   .fd-photo {
-    width: 200px; flex-shrink: 0; position: relative; overflow: hidden;
-    background: #05060e; border-right: 1px solid rgba(58,100,200,0.15);
-    cursor: zoom-in;
+    width: 100%; height: 100%; min-height: 400px;
+    cursor: zoom-in; position: relative;
   }
-  .fd-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.4s; filter: brightness(0.95); }
-  .fd-photo:hover img { transform: scale(1.04); }
+  .fd-photo img {
+    width: 100%; height: 100%; object-fit: cover; object-position: top center;
+    transition: transform 0.5s ease; filter: brightness(0.92) contrast(1.05);
+    display: block;
+  }
+  .fd-photo:hover img { transform: scale(1.06); }
   .fd-photo-placeholder {
-    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-    font-size: 5rem; opacity: 0.07;
+    width: 100%; height: 100%; min-height: 400px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 6rem; opacity: 0.06; color: var(--blue2);
   }
-  .fd-photo::after {
-    content: ''; position: absolute; right: 0; inset-block: 0; width: 40px;
-    background: linear-gradient(90deg, transparent, #07081a);
-    pointer-events: none;
+  /* Badge zoom sur la photo */
+  .fd-photo-hint {
+    position: absolute; bottom: 0.7rem; right: 0.9rem; z-index: 3;
+    font-size: 0.52rem; color: rgba(90,138,220,0.45);
+    font-family: 'Cinzel Decorative', serif; letter-spacing: 0.1em;
+    background: rgba(0,0,0,0.5); padding: 0.2rem 0.5rem; border-radius: 2px;
+    border: 1px solid rgba(58,100,200,0.15);
+    opacity: 0; transition: opacity 0.2s;
   }
+  .fd-photo:hover .fd-photo-hint { opacity: 1; }
 
-  /* Watermark épée */
+  /* Watermark */
   .fd-watermark {
     position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
-    font-size: 8rem; opacity: 0.03; pointer-events: none; user-select: none;
-    color: var(--blue2);
+    font-size: 10rem; opacity: 0.025; pointer-events: none; user-select: none;
+    color: var(--blue2); z-index: 0;
   }
 
-  /* Infos */
+  /* Colonne infos */
   .fd-info {
-    flex: 1; padding: 1.5rem 1.8rem 1.4rem;
-    display: flex; flex-direction: column; gap: 0;
-    position: relative; z-index: 1;
+    padding: 1.8rem 2rem 1.5rem;
+    display: flex; flex-direction: column;
+    position: relative; z-index: 1; overflow-y: auto;
   }
+
+  /* Statut pill en haut */
+  .fd-status-pill {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.5rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 0.25rem 0.8rem; border-radius: 20px; border: 1px solid;
+    margin-bottom: 0.9rem; width: fit-content;
+  }
+  .fd-status-pill.alive  { color: #6ab87a; border-color: #2a6a3a; background: rgba(30,90,50,0.12); }
+  .fd-status-pill.dead   { color: #a05a4a; border-color: #503030; background: rgba(60,20,20,0.12); }
+  .fd-status-pill.retired{ color: #7a8acc; border-color: #3a4080; background: rgba(40,50,100,0.12); }
 
   /* Nom */
   .fd-name {
-    font-family: 'Cinzel Decorative', serif; font-size: 2rem; font-weight: 700;
-    color: var(--white); line-height: 1.1; margin-bottom: 0.6rem;
-    text-shadow: 0 0 40px rgba(90,138,220,0.35);
-    letter-spacing: 0.04em;
+    font-family: 'Cinzel Decorative', serif; font-size: 2.4rem; font-weight: 700;
+    color: var(--white); line-height: 1.05; margin-bottom: 0.7rem;
+    text-shadow: 0 0 50px rgba(90,138,220,0.3);
+    letter-spacing: 0.03em;
   }
 
-  /* Tags rang + souffle */
-  .fd-tags { display: flex; gap: 0.5rem; margin-bottom: 1.3rem; flex-wrap: wrap; }
+  /* Tags rang + pouvoir */
+  .fd-tags { display: flex; gap: 0.45rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
   .fd-tag {
-    display: inline-flex; align-items: center; gap: 0.35rem;
-    padding: 0.22rem 0.75rem; border: 1px solid rgba(58,100,200,0.4);
-    background: rgba(58,100,200,0.06);
-    font-family: 'Cinzel Decorative', serif; font-size: 0.55rem;
-    color: var(--blue2); letter-spacing: 0.12em; text-transform: uppercase;
-    border-radius: 1px;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.28rem 0.9rem; border: 1px solid rgba(58,100,200,0.4);
+    background: rgba(58,100,200,0.07);
+    font-family: 'Cinzel Decorative', serif; font-size: 0.58rem;
+    color: var(--blue2); letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 2px;
   }
-  .fd-tag.souffle { border-color: rgba(150,180,220,0.3); background: rgba(90,120,180,0.06); color: #8aacdc; }
+  .fd-tag.souffle { border-color: rgba(120,150,200,0.3); background: rgba(80,110,170,0.06); color: #90aedd; }
 
-  /* Séparateur doré */
+  /* Séparateur */
   .fd-sep {
-    width: 100%; height: 1px; margin: 0.2rem 0 1.1rem;
-    background: linear-gradient(90deg, rgba(58,100,200,0.5), rgba(58,100,200,0.1) 60%, transparent);
+    width: 100%; height: 1px; margin: 0 0 1.4rem;
+    background: linear-gradient(90deg, rgba(58,100,200,0.45), rgba(58,100,200,0.08) 70%, transparent);
     position: relative;
   }
   .fd-sep::before {
     content: '◆'; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-    color: var(--blue2); font-size: 0.45rem; line-height: 1;
+    color: var(--blue2); font-size: 0.4rem;
   }
 
   /* Grille stats */
-  .fd-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 1rem; }
+  .fd-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem; margin-bottom: 1.2rem; }
   .fd-stat {
-    border: 1px solid rgba(58,100,200,0.25); background: rgba(58,100,200,0.04);
-    padding: 0.6rem 0.75rem; text-align: center; border-radius: 1px;
-    transition: border-color 0.15s;
+    border: 1px solid rgba(58,100,200,0.2); background: rgba(8,10,30,0.6);
+    padding: 0.75rem 1rem; text-align: center; border-radius: 2px;
+    transition: border-color 0.15s, background 0.15s;
   }
-  .fd-stat:hover { border-color: rgba(58,100,200,0.5); }
+  .fd-stat:hover { border-color: rgba(58,100,200,0.45); background: rgba(20,30,80,0.3); }
   .fd-stat-label {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.48rem;
-    color: rgba(58,100,200,0.5); letter-spacing: 0.18em; text-transform: uppercase;
-    margin-bottom: 0.3rem;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.46rem;
+    color: rgba(90,138,220,0.4); letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 0.4rem;
   }
   .fd-stat-val {
-    font-family: 'Cinzel Decorative', serif; font-size: 1.1rem;
+    font-family: 'Cinzel Decorative', serif; font-size: 1.3rem;
     color: var(--silver2); font-weight: 700; line-height: 1;
   }
-  .fd-stat.statut-alive .fd-stat-val { color: #6ab87a; }
-  .fd-stat.statut-dead  .fd-stat-val { color: #c05a4a; }
-  .fd-stat.statut-retired .fd-stat-val { color: #8aacdc; }
 
   /* Grille référents */
-  .fd-refs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .fd-refs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: auto; }
   .fd-ref {
-    border: 1px solid rgba(58,100,200,0.2); background: rgba(0,0,0,0.25);
-    padding: 0.55rem 0.75rem; border-radius: 1px;
+    border: 1px solid rgba(58,100,200,0.15); background: rgba(0,0,0,0.3);
+    padding: 0.6rem 0.85rem; border-radius: 2px;
   }
   .fd-ref-label {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.44rem;
-    color: rgba(58,100,200,0.45); letter-spacing: 0.18em; text-transform: uppercase;
-    margin-bottom: 0.25rem;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.42rem;
+    color: rgba(90,138,220,0.4); letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 0.28rem;
   }
   .fd-ref-val {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.78rem; color: var(--silver);
+    font-family: 'Cinzel Decorative', serif; font-size: 0.82rem; color: var(--silver);
   }
 
   /* Observations */
   .fd-obs {
-    padding: 1rem 1.8rem 1.1rem;
-    border-top: 1px solid rgba(58,100,200,0.15);
-    background: rgba(0,0,0,0.3);
+    padding: 1.1rem 2rem 1.2rem;
+    border-top: 1px solid rgba(58,100,200,0.12);
+    background: rgba(0,0,5,0.4);
   }
   .fd-obs-label {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.45rem;
-    color: rgba(58,100,200,0.4); letter-spacing: 0.22em; text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.44rem;
+    color: rgba(90,138,220,0.35); letter-spacing: 0.25em; text-transform: uppercase;
+    margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem;
   }
+  .fd-obs-label::after { content: ''; flex: 1; height: 1px; background: rgba(58,100,200,0.12); }
   .fd-obs-text {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.68rem; color: var(--text);
-    line-height: 1.9;
+    font-family: 'EB Garamond', 'Georgia', serif; font-size: 1rem; color: var(--text);
+    line-height: 1.9; font-style: italic;
   }
 
-  /* Footer actions */
+  /* Footer */
   .fd-footer {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 0.65rem 1.8rem;
-    border-top: 1px solid rgba(58,100,200,0.15);
-    background: rgba(0,0,0,0.45);
+    padding: 0.7rem 1.6rem;
+    border-top: 1px solid rgba(58,100,200,0.12);
+    background: rgba(0,0,5,0.55);
   }
   .fd-footer-id {
-    font-family: 'Cinzel Decorative', serif; font-size: 0.42rem;
-    color: rgba(58,100,200,0.25); letter-spacing: 0.2em;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.4rem;
+    color: rgba(58,100,200,0.2); letter-spacing: 0.22em;
   }
   .fd-edit-btn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.38rem 1rem; border: 1px solid rgba(58,100,200,0.45);
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 1.2rem; border: 1px solid rgba(58,100,200,0.4);
     background: rgba(58,100,200,0.07); color: var(--blue2);
-    font-family: 'Cinzel Decorative', serif; font-size: 0.5rem;
-    letter-spacing: 0.12em; cursor: pointer; border-radius: 1px; transition: all 0.15s;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.52rem;
+    letter-spacing: 0.1em; cursor: pointer; border-radius: 2px; transition: all 0.15s;
   }
-  .fd-edit-btn:hover { background: rgba(58,100,200,0.15); border-color: var(--blue2); }
+  .fd-edit-btn:hover { background: rgba(58,100,200,0.15); border-color: var(--blue2); color: var(--silver2); }
   .fd-del-btn {
-    display: inline-flex; align-items: center; gap: 0.4rem;
-    padding: 0.38rem 1rem; border: 1px solid rgba(180,60,50,0.4);
-    background: rgba(180,60,50,0.06); color: #c05a4a;
-    font-family: 'Cinzel Decorative', serif; font-size: 0.5rem;
-    letter-spacing: 0.12em; cursor: pointer; border-radius: 1px; transition: all 0.15s;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 1.2rem; border: 1px solid rgba(180,60,50,0.35);
+    background: rgba(140,40,30,0.07); color: #c05a4a;
+    font-family: 'Cinzel Decorative', serif; font-size: 0.52rem;
+    letter-spacing: 0.1em; cursor: pointer; border-radius: 2px; transition: all 0.15s;
   }
-  .fd-del-btn:hover { background: rgba(180,60,50,0.15); border-color: #c05a4a; }
+  .fd-del-btn:hover { background: rgba(180,60,50,0.15); border-color: #c05a4a; color: #e07060; }
 
   /* Zoom photo plein écran */
   #photo-zoom-overlay {
@@ -1231,41 +1256,45 @@
 <div class="modal-overlay hidden" id="modal-detail">
   <div class="modal" style="padding:0;position:relative">
 
-    <!-- Coins déco extra -->
-    <div style="position:absolute;top:-1px;right:-1px;width:18px;height:18px;border-top:2px solid var(--blue2);border-right:2px solid var(--blue2);z-index:20;pointer-events:none"></div>
-    <div style="position:absolute;bottom:-1px;left:-1px;width:18px;height:18px;border-bottom:2px solid var(--blue2);border-left:2px solid var(--blue2);z-index:20;pointer-events:none"></div>
-
     <!-- Header breadcrumb -->
     <div class="fd-header">
-      <div class="fd-breadcrumb">Ordre des Démons &nbsp;›&nbsp; <span id="fd-breadcrumb-name">Archive</span></div>
+      <div class="fd-breadcrumb">Demonarium &nbsp;›&nbsp; Registre &nbsp;›&nbsp; <span id="fd-breadcrumb-name">Archive</span></div>
       <button class="fd-close" onclick="closeModal('modal-detail')">✕</button>
     </div>
 
-    <!-- Corps -->
+    <!-- Corps : 2 colonnes -->
     <div class="fd-body">
       <div class="fd-watermark">⚔</div>
 
-      <!-- Photo -->
-      <div class="fd-photo" id="fd-photo" onclick="openPhotoZoom()"></div>
+      <!-- Colonne photo -->
+      <div class="fd-photo-col">
+        <div class="fd-photo" id="fd-photo" onclick="openPhotoZoom()">
+          <div class="fd-photo-hint">🔍 Agrandir</div>
+        </div>
+      </div>
 
-      <!-- Infos -->
+      <!-- Colonne infos -->
       <div class="fd-info">
+        <!-- Statut pill -->
+        <div class="fd-status-pill" id="fd-status-pill">● En Service</div>
+
+        <!-- Nom -->
         <div class="fd-name" id="fd-name">—</div>
+
+        <!-- Tags rang + pouvoir -->
         <div class="fd-tags" id="fd-tags"></div>
+
+        <!-- Séparateur -->
         <div class="fd-sep"></div>
 
-        <!-- Stats : Statut / Jours / Photos -->
+        <!-- Stats : Année / Photos -->
         <div class="fd-stats">
-          <div class="fd-stat" id="fd-stat-statut">
-            <div class="fd-stat-label">Statut</div>
-            <div class="fd-stat-val" id="fd-statut-val">—</div>
+          <div class="fd-stat">
+            <div class="fd-stat-label">Année de Service</div>
+            <div class="fd-stat-val" id="fd-jours-val">—</div>
           </div>
           <div class="fd-stat">
-            <div class="fd-stat-label">Jours de Service</div>
-            <div class="fd-stat-val" id="fd-jours-val">0</div>
-          </div>
-          <div class="fd-stat">
-            <div class="fd-stat-label">Photos</div>
+            <div class="fd-stat-label">Photo</div>
             <div class="fd-stat-val" id="fd-photos-val">—</div>
           </div>
         </div>
@@ -1284,7 +1313,7 @@
     <!-- Footer -->
     <div class="fd-footer">
       <span class="fd-footer-id" id="fd-footer-id"></span>
-      <div style="display:flex;gap:0.4rem" id="fd-actions"></div>
+      <div style="display:flex;gap:0.5rem" id="fd-actions"></div>
     </div>
 
   </div>
@@ -1580,36 +1609,38 @@ window.openDetailModal=id=>{
   // Nom
   document.getElementById('fd-name').textContent=p.nom||'—';
 
-  // Tags rang + souffle
+  // Statut pill
+  const pill=document.getElementById('fd-status-pill');
+  const pillMap={
+    alive:{label:'● En Service',cls:'alive'},
+    dead:{label:'✝ Décédé',cls:'dead'},
+    retired:{label:'◈ Retraité',cls:'retired'}
+  };
+  const ps=pillMap[p.statut]||pillMap.alive;
+  pill.textContent=ps.label;
+  pill.className='fd-status-pill '+ps.cls;
+
+  // Tags rang + pouvoir
   let tags='';
-  if(p.rang) tags+=`<span class="fd-tag">${p.rang}</span>`;
-  if(p.souffle) tags+=`<span class="fd-tag souffle">${p.souffle}</span>`;
+  if(p.rang) tags+=`<span class="fd-tag">⚔ ${p.rang}</span>`;
+  if(p.souffle) tags+=`<span class="fd-tag souffle">✦ ${p.souffle}</span>`;
   document.getElementById('fd-tags').innerHTML=tags;
 
   // Photo
   const photoEl=document.getElementById('fd-photo');
   if(p.photo){
-    photoEl.innerHTML=`<img src="${p.photo}" alt="${p.nom}">`;
+    photoEl.innerHTML=`<img src="${p.photo}" alt="${p.nom}"><div class="fd-photo-hint">🔍 Agrandir</div>`;
     photoEl.style.cursor='zoom-in';
     photoEl._photoSrc=p.photo;
   } else {
-    photoEl.innerHTML='<div class="fd-photo-placeholder">⚔</div>';
+    photoEl.innerHTML='<div class="fd-photo-placeholder">⚔</div><div class="fd-photo-hint" style="display:none"></div>';
     photoEl.style.cursor='default';
     photoEl._photoSrc=null;
   }
 
-  // Statut
-  const statutLabels={alive:'● En Service',dead:'✝ Mort',retired:'◈ Retraité'};
-  const statutClasses={alive:'statut-alive',dead:'statut-dead',retired:'statut-retired'};
-  const statutEl=document.getElementById('fd-stat-statut');
-  statutEl.className='fd-stat '+(statutClasses[p.statut]||'');
-  document.getElementById('fd-statut-val').textContent=statutLabels[p.statut]||p.statut||'—';
-
-  // Jours
-  document.getElementById('fd-jours-val').textContent=p.jours||'0';
-
-  // Photos (indique si y'en a une)
-  document.getElementById('fd-photos-val').textContent=p.photo?'1':'—';
+  // Année + photo count
+  document.getElementById('fd-jours-val').textContent=p.jours||'—';
+  document.getElementById('fd-photos-val').textContent=p.photo?'✓':'—';
 
   // Référents
   let refs='';
@@ -1624,7 +1655,7 @@ window.openDetailModal=id=>{
   else { obsEl.style.display='none'; }
 
   // Footer ID
-  document.getElementById('fd-footer-id').textContent='⚔ '+id.substring(0,14).toUpperCase();
+  document.getElementById('fd-footer-id').textContent='⚔ REF-'+id.substring(0,12).toUpperCase();
 
   // Boutons
   const actions=document.getElementById('fd-actions');
