@@ -858,8 +858,8 @@
     <div class="sidebar-nav">
       <div class="nav-item active" onclick="showView('dashboard')"><span class="nav-icon">🏛</span>Tableau de Bord</div>
       <div class="nav-item" onclick="showView('codex')"><span class="nav-icon">📖</span>Demonarium</div>
-      <div class="nav-item" onclick="showView('missions')"><span class="nav-icon">📋</span>Missions <span class="nav-badge" id="badge-missions">0</span></div>
-      <div class="nav-item" onclick="showView('cibles')"><span class="nav-icon">🎯</span>Cibles Prioritaires <span class="nav-badge" id="badge-cibles">0</span></div>
+      <div class="nav-item" onclick="showView('missions')"><span class="nav-icon">📋</span>Taches <span class="nav-badge" id="badge-missions">0</span></div>
+      <div class="nav-item" onclick="showView('cibles')"><span class="nav-icon">🥷</span>Objectifs Prioritaires <span class="nav-badge" id="badge-cibles">0</span></div>
       <div class="nav-item" onclick="showView('registre')"><span class="nav-icon">⚔</span>Registre <span class="nav-badge" id="badge-registre">0</span></div>
       <div class="nav-item" id="nav-historique" style="display:none" onclick="showView('historique')"><span class="nav-icon">🕰</span>Historique</div>
       <div class="nav-item" id="nav-admin" style="display:none" onclick="showView('admin')"><span class="nav-icon">🛡</span>Administration</div>
@@ -901,8 +901,8 @@
           <div class="stat-card"><div class="stat-icon">⚔</div><div class="stat-num" id="stat-pourf">0</div><div class="stat-label">Démons</div></div>
           <div class="stat-card"><div class="stat-icon">👑</div><div class="stat-num" id="stat-piliers">0</div><div class="stat-label">Lunes Inférieures</div></div>
           <div class="stat-card"><div class="stat-icon">🟢</div><div class="stat-num" id="stat-service">0</div><div class="stat-label">En service</div></div>
-          <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-num" id="stat-cibles">0</div><div class="stat-label">Cibles</div></div>
-          <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-num" id="stat-missions">0</div><div class="stat-label">Missions actives</div></div>
+          <div class="stat-card"><div class="stat-icon">🥷</div><div class="stat-num" id="stat-cibles">0</div><div class="stat-label">Objectifs</div></div>
+          <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-num" id="stat-missions">0</div><div class="stat-label">Taches actives</div></div>
           <div class="stat-card"><div class="stat-icon">✝</div><div class="stat-num" id="stat-tombes">0</div><div class="stat-label">Tombés</div></div>
         </div>
       </div>
@@ -929,7 +929,7 @@
       <!-- CIBLES -->
       <div class="view" id="view-cibles">
         <div class="section-header">
-          <h2>🎯 Cibles Prioritaires</h2>
+          <h2>🥷 Objectifs Prioritaires</h2>
           <button class="btn btn-red btn-sm editor-only" style="display:none" onclick="openModal('modal-cible')">+ Désigner</button>
         </div>
         <div class="cards-grid fade-in" id="cibles-list"></div>
@@ -938,8 +938,8 @@
       <!-- MISSIONS -->
       <div class="view" id="view-missions">
         <div class="section-header">
-          <h2>📋 Tableau des Missions</h2>
-          <button class="btn btn-blue btn-sm editor-only" style="display:none" onclick="openModal('modal-mission')">+ Nouvelle Mission</button>
+          <h2>📋 Tableau des Taches</h2>
+          <button class="btn btn-blue btn-sm editor-only" style="display:none" onclick="openModal('modal-mission')">+ Nouvelle Tache</button>
         </div>
         <div class="missions-board fade-in">
           <div class="mission-col"><div class="col-title">⏳ En attente</div><div id="missions-attente"></div></div>
@@ -1140,11 +1140,11 @@
 <div class="modal-overlay hidden" id="modal-cible">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-cible')">✕</button>
-    <div class="modal-title">🎯 Avis de Recherche</div>
+    <div class="modal-title">🥷 Avis de Recherche</div>
     <div class="form-group"><label>Prénom</label><input type="text" id="cible-prenom" placeholder="Prénom"></div>
     <div class="form-group"><label>Nom</label><input type="text" id="cible-nom" placeholder="Nom"></div>
     <div class="form-group">
-      <label>Rang de la Cible</label>
+      <label>Rang de l'Objectif</label>
       <select id="cible-rang" onchange="updatePriority()">
         <option value="">Sélectionnez</option>
         <option value="1">Lune Supérieure 1-3</option>
@@ -1172,8 +1172,8 @@
 <div class="modal-overlay hidden" id="modal-mission">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('modal-mission')">✕</button>
-    <div class="modal-title" id="modal-mission-title">📋 Nouvelle Mission</div>
-    <div class="form-group"><label>Titre</label><input type="text" id="mission-titre" placeholder="Intitulé de la mission"></div>
+    <div class="modal-title" id="modal-mission-title">📋 Nouvelle Tache</div>
+    <div class="form-group"><label>Titre</label><input type="text" id="mission-titre" placeholder="Intitulé de la tache"></div>
     <div class="form-group"><label>Priorité</label>
       <select id="mission-priorite"><option value="haute">Haute — Urgente</option><option value="normale" selected>Normale</option><option value="basse">Basse</option></select>
     </div>
@@ -1181,7 +1181,7 @@
       <select id="mission-statut"><option value="attente">En Attente</option><option value="encours">En Cours</option><option value="terminee">Terminée</option><option value="echec">Échec</option></select>
     </div>
     <div class="form-group"><label>Membres assignés</label><input type="text" id="mission-membres" placeholder="Noms séparés par virgules…"></div>
-    <div class="form-group"><label>Description</label><textarea id="mission-desc" placeholder="Détails de la mission…"></textarea></div>
+    <div class="form-group"><label>Description</label><textarea id="mission-desc" placeholder="Détails de la tache…"></textarea></div>
     <input type="hidden" id="mission-id">
     <div class="form-actions">
       <button class="btn" onclick="closeModal('modal-mission')">Annuler</button>
@@ -1201,7 +1201,7 @@
     <div class="form-group"><label>Priorité</label>
       <select id="op-priorite"><option value="normale">Normale</option><option value="haute">Haute</option><option value="critique">Critique</option></select>
     </div>
-    <div class="form-group"><label>Cible</label><input type="text" id="op-cible" placeholder="Nom de la cible"></div>
+    <div class="form-group"><label>Objectif</label><input type="text" id="op-cible" placeholder="Nom de l'objectif"></div>
     <div class="form-group"><label>Opérateur</label><input type="text" id="op-operateur" placeholder="Nom de l'opérateur"></div>
     <div class="form-group"><label>Statut</label>
       <select id="op-statut"><option value="attente">En attente</option><option value="encours">En cours</option><option value="terminee">Terminée</option><option value="echec">Échec</option></select>
@@ -1224,7 +1224,7 @@
     <div class="form-group"><label>Nom affiché</label><input type="text" id="user-nom" placeholder="Nom ou pseudo"></div>
     <div class="form-group"><label>Rôles</label>
       <div>
-        <label class="cb-label"><input type="checkbox" id="role-inspecteur"><div><div>Inspecteur</div><div class="cb-desc">Registre, cibles, missions</div></div></label>
+        <label class="cb-label"><input type="checkbox" id="role-inspecteur"><div><div>Inspecteur</div><div class="cb-desc">Registre, objectifs, taches</div></div></label>
         <label class="cb-label"><input type="checkbox" id="role-sphere"><div><div>Sphère Secrète</div><div class="cb-desc">Opérations secrètes</div></div></label>
         <label class="cb-label"><input type="checkbox" id="role-adminsphere"><div><div>Admin Sphère</div><div class="cb-desc">Historique + gestion</div></div></label>
         <label class="cb-label"><input type="checkbox" id="role-admin"><div><div>Admin</div><div class="cb-desc">Accès complet</div></div></label>
@@ -1376,8 +1376,8 @@ document.getElementById('splash').addEventListener('click', () => {
 const VIEWS = {
   dashboard:['🏛','Archives des Pourfendeurs'],
   registre:['⚔','Registre des Pourfendeurs'],
-  cibles:['🎯','Cibles Prioritaires'],
-  missions:['📋','Tableau des Missions'],
+  cibles:['🥷','Objectifs Prioritaires'],
+  missions:['📋','Tableau des Taches'],
   codex:['📖','Demonarium de l\'Ordre'],
   historique:['🕰','Historique'],
   admin:['🛡','Administration'],
@@ -1522,7 +1522,7 @@ window.openModal=id=>{
     document.getElementById('pourf-photo-preview').innerHTML='⚔';
     document.getElementById('pourf-photo-remove').style.display='none';
   }
-  if(id==='modal-mission'){ state.editingMissionId=null; document.getElementById('modal-mission-title').textContent='📋 Nouvelle Mission'; ['mission-titre','mission-membres','mission-desc'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';}); }
+  if(id==='modal-mission'){ state.editingMissionId=null; document.getElementById('modal-mission-title').textContent='📋 Nouvelle Tache'; ['mission-titre','mission-membres','mission-desc'].forEach(f=>{const el=document.getElementById(f);if(el)el.value='';}); }
   document.getElementById(id).classList.remove('hidden');
 };
 window.closeModal=id=>document.getElementById(id).classList.add('hidden');
@@ -1678,13 +1678,13 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closePhotoZoom();
 function renderCibles(){
   const list=document.getElementById('cibles-list');
   const items=Object.entries(state.cibles);
-  if(!items.length){list.innerHTML='<div class="empty-state"><span class="empty-icon">🎯</span>Aucune cible désignée.</div>';return;}
+  if(!items.length){list.innerHTML='<div class="empty-state"><span class="empty-icon">🥷</span>Aucun objectif désigné.</div>';return;}
   list.innerHTML=items.map(([id,c])=>{
     const pc=['','p1','p2','p3'][c.priorite]||'p3';
     const pl=['','⚠ PRIORITÉ I','⚡ PRIORITÉ II','• PRIORITÉ III'][c.priorite]||'';
     return `<div class="member-card target-card">
       <div class="card-header">
-        <div class="card-avatar">🎯</div>
+        <div class="card-avatar">🥷</div>
         <div>
           <div class="card-name">${c.prenom||''} ${c.nom||''}</div>
           <div class="card-rank">${c.rang||'—'}</div>
@@ -1708,14 +1708,14 @@ window.saveCible=async()=>{
   if(!state.user){toast('Connexion requise','error');return;}
   const data={prenom:document.getElementById('cible-prenom').value.trim(),nom:document.getElementById('cible-nom').value.trim(),rang:document.getElementById('cible-rang').value,priorite:parseInt(document.getElementById('cible-priorite').value)||3,motif:document.getElementById('cible-motif').value.trim(),createdAt:Date.now()};
   await push(ref(db,'cibles'),data);
-  logAction('add','Cibles',data.prenom+' '+data.nom); toast('Avis émis 🎯','success');
+  logAction('add','Objectifs',data.prenom+' '+data.nom); toast('Avis émis 🥷','success');
   closeModal('modal-cible');
 };
 window.deleteCible=async id=>{
-  if(!confirm('Retirer cette cible ?')) return;
+  if(!confirm('Retirer cet objectif ?')) return;
   const nom=`${state.cibles[id]?.prenom} ${state.cibles[id]?.nom}`;
   await remove(ref(db,'cibles/'+id));
-  logAction('del','Cibles',nom); toast('Cible retirée','info');
+  logAction('del','Objectifs',nom); toast('Objectif retiré','info');
 };
 
 // MISSIONS
@@ -1743,7 +1743,7 @@ function renderMissions(){
 window.editMission=id=>{
   const m=state.missions[id]; if(!m) return;
   state.editingMissionId=id;
-  document.getElementById('modal-mission-title').textContent='✏ Modifier la Mission';
+  document.getElementById('modal-mission-title').textContent='✏ Modifier la Tache';
   document.getElementById('mission-titre').value=m.titre||'';
   document.getElementById('mission-priorite').value=m.priorite||'normale';
   document.getElementById('mission-statut').value=m.statut||'attente';
@@ -1757,19 +1757,19 @@ window.saveMission=async()=>{
   if(!data.titre){toast('Titre requis','error');return;}
   if(state.editingMissionId){
     await update(ref(db,'missions/'+state.editingMissionId),data);
-    logAction('edit','Missions',data.titre); toast('Mission mise à jour','success');
+    logAction('edit','Taches',data.titre); toast('Tache mise à jour','success');
   } else {
     data.createdAt=Date.now();
     await push(ref(db,'missions'),data);
-    logAction('add','Missions',data.titre); toast('Mission enregistrée','success');
+    logAction('add','Taches',data.titre); toast('Tache enregistrée','success');
   }
   closeModal('modal-mission');
 };
 window.deleteMission=async id=>{
-  if(!confirm('Supprimer cette mission ?')) return;
+  if(!confirm('Supprimer cette tache ?')) return;
   const titre=state.missions[id]?.titre;
   await remove(ref(db,'missions/'+id));
-  logAction('del','Missions',titre); toast('Mission supprimée','info');
+  logAction('del','Taches',titre); toast('Tache supprimée','info');
 };
 
 // OPS
@@ -1911,7 +1911,7 @@ Ces fleurs, ont un pouvoir spécifique. Elles permettent de tuer des démons jus
     {icon:'🏴',title:"Les Brigades de l'Ordre",body:`<strong>Brigade Judiciaire ⚖️</strong><br>
 La brigade judiciaire sert à faire régner la justice et la paix. C'est elle qui maintient l'ordre chez les Pourfendeurs et est capable de vous sanctionner à tout moment.<br><br>
 <strong>Brigade Anti-Occulte 🔮</strong><br>
-La brigade anti occulte sert à lutter contre les pratiques obscures et les phénomènes liés à l'occultisme. Elle a pour mission de contrer les rituels et pouvoirs interdits créés par certains démons, afin de protéger l'équilibre et la sécurité des Pourfendeurs.<br><br>
+La brigade anti occulte sert à lutter contre les pratiques obscures et les phénomènes liés à l'occultisme. Elle a pour tache de contrer les rituels et pouvoirs interdits créés par certains démons, afin de protéger l'équilibre et la sécurité des Pourfendeurs.<br><br>
 <strong>Brigade Instructeur 🎓</strong><br>
 La brigade instruction a comme son nom l'indique consiste à former les nouveaux aspirants de chaque souffle, seul ceux-ci sont habilités à former les nouveaux aspirants.<br><br>
 <strong>Brigade Finance &amp; Relation 💰</strong><br>
@@ -1940,9 +1940,9 @@ function renderRules(){
     {title:'Discrétion Absolue',body:"Aucune information relative à la Sphère Secrète ne doit être divulguée à quiconque n'appartenant pas à ses rangs. Cela inclut les Inspecteurs et les officiers extérieurs — quelle que soit leur autorité apparente."},
     {title:"L'Ombre Avant Tout",body:"La Sphère Secrète n'existe pas officiellement. Ses membres opèrent dans l'anonymat le plus total. Les noms, les visages et les méthodes restent dans l'ombre permanente."},
     {title:"Élimination des Témoins",body:"Tout individu ayant connaissance d'une opération en cours ou de l'existence de la Sphère constitue une menace directe. L'élimination sans sommation est autorisée — et parfois exigée."},
-    {title:"Obéissance à la Chaîne",body:"Les ordres provenant des échelons supérieurs de la Sphère sont non négociables. L'exécution prime sur la compréhension. Les doutes se formulent après la mission, jamais pendant."},
+    {title:"Obéissance à la Chaîne",body:"Les ordres provenant des échelons supérieurs de la Sphère sont non négociables. L'exécution prime sur la compréhension. Les doutes se formulent après la tache, jamais pendant."},
     {title:"Aucune Trace, Aucun Lien",body:"Toute communication concernant les opérations passe exclusivement par les canaux officiels de la Sphère. La conservation de preuves compromettantes est strictement interdite."},
-    {title:"La Mission Avant la Vie",body:"En cas de capture ou de compromission grave, l'opérateur doit prioriser l'intégrité de la Sphère. Mourir en silence vaut mieux que trahir. La Sphère vous a choisi — honorez ce choix jusqu'au bout."}
+    {title:"La Tache Avant la Vie",body:"En cas de capture ou de compromission grave, l'opérateur doit prioriser l'intégrité de la Sphère. Mourir en silence vaut mieux que trahir. La Sphère vous a choisi — honorez ce choix jusqu'au bout."}
   ];
   const roman=['I','II','III','IV','V','VI'];
   document.getElementById('rules-list').innerHTML=rules.map((r,i)=>`
