@@ -1134,8 +1134,8 @@
     </div>
     <div class="form-group"><label>Année</label><input type="number" id="pourf-jours" placeholder="0" min="0"></div>
     <div class="form-group"><label>Sphère</label><input type="text" id="pourf-brigade" placeholder="Nom de la sphère"></div>
-    <div class="form-group"><label>Kinoe Référent</label><input type="text" id="pourf-kinoe" placeholder="Nom du Kinoe référent"></div>
-    <div class="form-group"><label>Pilier Référent</label><input type="text" id="pourf-pilier" placeholder="Nom du Pilier référent"></div>
+    <div class="form-group"><label>Lune Inférieure Référente</label><input type="text" id="pourf-kinoe" placeholder="Nom de la Lune Inférieure référente"></div>
+    <div class="form-group"><label>Lune Supérieure Référente</label><input type="text" id="pourf-pilier" placeholder="Nom de la Lune Supérieure référente"></div>
     <div class="form-group"><label>Observations</label><textarea id="pourf-obs" placeholder="Notes, observations…"></textarea></div>
     <input type="hidden" id="pourf-id">
     <div class="form-actions">
@@ -1654,8 +1654,8 @@ window.openDetailModal=id=>{
   // Référents
   let refs='';
   if(p.brigade) refs+=`<div class="fd-ref"><div class="fd-ref-label">Sphère Référente</div><div class="fd-ref-val">${p.brigade}</div></div>`;
-  if(p.pilier)  refs+=`<div class="fd-ref"><div class="fd-ref-label">Pilier Référent</div><div class="fd-ref-val">${p.pilier}</div></div>`;
-  if(p.kinoe)   refs+=`<div class="fd-ref"><div class="fd-ref-label">Kinoe Référent</div><div class="fd-ref-val">${p.kinoe}</div></div>`;
+  if(p.pilier)  refs+=`<div class="fd-ref"><div class="fd-ref-label">Lune Supérieure Référente</div><div class="fd-ref-val">${p.pilier}</div></div>`;
+  if(p.kinoe)   refs+=`<div class="fd-ref"><div class="fd-ref-label">Lune Inférieure Référente</div><div class="fd-ref-val">${p.kinoe}</div></div>`;
   document.getElementById('fd-refs').innerHTML=refs;
 
   // Observations
